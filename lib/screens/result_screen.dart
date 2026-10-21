@@ -256,10 +256,11 @@ class _ResultScreenState extends State<ResultScreen>
                           onPressed: () {
                             final state = QuizProvider.of(context);
                             state.resetQuiz();
-                            state.requestTab(1);
                             Navigator.pushAndRemoveUntil(
                               context,
-                              MaterialPageRoute(builder: (_) => const MainScreen()),
+                              MaterialPageRoute(
+                                builder: (_) => const MainScreen(initialIndex: 1),
+                              ),
                               (_) => false,
                             );
                           },
@@ -272,10 +273,11 @@ class _ResultScreenState extends State<ResultScreen>
                           onPressed: () {
                             final state = QuizProvider.of(context);
                             state.resetQuiz();
-                            state.requestTab(0);
                             Navigator.pushAndRemoveUntil(
                               context,
-                              MaterialPageRoute(builder: (_) => const MainScreen()),
+                              MaterialPageRoute(
+                                builder: (_) => const MainScreen(initialIndex: 0),
+                              ),
                               (_) => false,
                             );
                           },

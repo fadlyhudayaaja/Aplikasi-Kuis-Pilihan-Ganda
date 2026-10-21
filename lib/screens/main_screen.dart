@@ -8,15 +8,18 @@ import 'history_screen.dart';
 /// Halaman utama dengan bottom navigation – Beranda & Histori.
 /// Di layar lebar (tablet/web), menggunakan NavigationRail sebagai sidebar.
 class MainScreen extends StatefulWidget {
-  const MainScreen({super.key});
+  final int initialIndex;
+  const MainScreen({super.key, this.initialIndex = 0});
 
   @override
   State<MainScreen> createState() => _MainScreenState();
 }
 
 class _MainScreenState extends State<MainScreen> {
-  int _currentIndex = 0;
+  int _currentIndex;
   QuizState? _state;
+
+  _MainScreenState() : _currentIndex = 0;
 
   void _onStateChanged() {
     if (!mounted || _state == null) return;
@@ -27,16 +30,17 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    _currentIndex = widget.initialIndex;
+  }
+
+  @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     if (_state == null) {
       _state = QuizProvider.of(context);
       _state!.addListener(_onStateChanged);
-      // Terapkan pending tab request yang belum terdengar oleh listener
-      if (_state!.requestedTabIndex != -1) {
-        _currentIndex = _state!.requestedTabIndex;
-        _state!.clearTabRequest();
-      }
     }
   }
 
