@@ -27,10 +27,10 @@ class HistoryScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
     final theme = Theme.of(context);
     final primary = theme.colorScheme.primary;
     final cw = Responsive.cw(context);
+    final ch = Responsive.ch(context);
 
     return ListenableBuilder(
       listenable: QuizProvider.of(context),
@@ -46,39 +46,28 @@ class HistoryScreen extends StatelessWidget {
               child: Column(
                 children: [
                   // ── Header ──────────────────────────────────────────────
-                  SizedBox(height: size.height * 0.02),
+                  SizedBox(height: ch * 0.02),
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: cw * 0.05),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
-                          'Riwayat Kuis',
-                          style: TextStyle(
-                            fontFamily: 'Poppins',
-                            fontWeight: FontWeight.w800,
-                            fontSize: cw * 0.065,
-                            color: theme.colorScheme.onSurface,
-                          ),
-                        ),
+                        Text('Riwayat Kuis', style: TextStyle(
+                          fontFamily: 'Poppins', fontWeight: FontWeight.w800,
+                          fontSize: cw * 0.065, color: theme.colorScheme.onSurface,
+                        )),
                         Row(
                           children: [
                             Container(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 10, vertical: 4),
+                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                               decoration: BoxDecoration(
                                 color: primary.withValues(alpha: 0.12),
                                 borderRadius: BorderRadius.circular(20),
                               ),
-                              child: Text(
-                                '${history.length} kuis',
-                                style: TextStyle(
-                                  fontFamily: 'Poppins',
-                                  fontSize: cw * 0.033,
-                                  fontWeight: FontWeight.w600,
-                                  color: primary,
-                                ),
-                              ),
+                              child: Text('${history.length} kuis', style: TextStyle(
+                                fontFamily: 'Poppins', fontSize: cw * 0.033,
+                                fontWeight: FontWeight.w600, color: primary,
+                              )),
                             ),
                             if (!Responsive.isWide(context)) ...[
                               const SizedBox(width: 8),
@@ -95,30 +84,19 @@ class HistoryScreen extends StatelessWidget {
                         ? _EmptyState(primary: primary)
                         : Column(
                             children: [
-                              // ── Ringkasan statistik ─────────────────────────
                               _SummaryHeader(history: history, primary: primary),
-
-                              // ── Judul ───────────────────────────────────────
                               Padding(
                                 padding: EdgeInsets.symmetric(
-                                  horizontal: cw * 0.05,
-                                  vertical: size.height * 0.012,
+                                  horizontal: cw * 0.05, vertical: ch * 0.012,
                                 ),
                                 child: Align(
                                   alignment: Alignment.centerLeft,
-                                  child: Text(
-                                    'Detail Riwayat',
-                                    style: TextStyle(
-                                      fontFamily: 'Poppins',
-                                      fontSize: cw * 0.042,
-                                      fontWeight: FontWeight.w700,
-                                      color: theme.colorScheme.onSurface,
-                                    ),
-                                  ),
+                                  child: Text('Detail Riwayat', style: TextStyle(
+                                    fontFamily: 'Poppins', fontSize: cw * 0.042,
+                                    fontWeight: FontWeight.w700, color: theme.colorScheme.onSurface,
+                                  )),
                                 ),
                               ),
-
-                              // ── Daftar riwayat ──────────────────────────────
                               Expanded(
                                 child: Padding(
                                   padding: EdgeInsets.symmetric(horizontal: cw * 0.04),
@@ -127,11 +105,8 @@ class HistoryScreen extends StatelessWidget {
                                       color: theme.colorScheme.surface,
                                       borderRadius: BorderRadius.circular(18),
                                       boxShadow: [
-                                        BoxShadow(
-                                          color: theme.colorScheme.shadow.withValues(alpha: 0.06),
-                                          blurRadius: 12,
-                                          offset: const Offset(0, 4),
-                                        ),
+                                        BoxShadow(color: theme.colorScheme.shadow.withValues(alpha: 0.06),
+                                          blurRadius: 12, offset: const Offset(0, 4)),
                                       ],
                                     ),
                                     child: ClipRRect(
@@ -150,14 +125,11 @@ class HistoryScreen extends StatelessWidget {
                                               itemBuilder: (ctx, index) {
                                                 final r = history[index];
                                                 return _HistoryRow(
-                                                  result: r,
-                                                  index: index,
+                                                  result: r, index: index,
                                                   scoreColor: _scoreColor(r.score),
                                                   dateString: _formatDateTime(r.finishedAt),
-                                                  subjectIcon:
-                                                      subjectIcons[r.subject] ?? Icons.book_rounded,
-                                                  subjectColor:
-                                                      subjectColors[r.subject] ?? theme.colorScheme.primary,
+                                                  subjectIcon: subjectIcons[r.subject] ?? Icons.book_rounded,
+                                                  subjectColor: subjectColors[r.subject] ?? theme.colorScheme.primary,
                                                 );
                                               },
                                             ),
@@ -168,7 +140,7 @@ class HistoryScreen extends StatelessWidget {
                                   ),
                                 ),
                               ),
-                              SizedBox(height: size.height * 0.025),
+                              SizedBox(height: ch * 0.025),
                             ],
                           ),
                   ),
@@ -190,7 +162,7 @@ class _SummaryHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
+    final ch = Responsive.ch(context);
     final cw = Responsive.cw(context);
     final avgScore = history.isEmpty
         ? 0
@@ -198,32 +170,17 @@ class _SummaryHeader extends StatelessWidget {
     final best = history.map((r) => r.score).reduce((a, b) => a > b ? a : b);
 
     return Padding(
-      padding: EdgeInsets.symmetric(
-        horizontal: cw * 0.04,
-        vertical: size.height * 0.012,
-      ),
+      padding: EdgeInsets.symmetric(horizontal: cw * 0.04, vertical: ch * 0.012),
       child: Row(
         children: [
-          Expanded(
-            child: _MiniStatCard(
-              label: 'Total Sesi', value: '${history.length}',
-              icon: Icons.list_alt_rounded, color: primary,
-            ),
-          ),
+          Expanded(child: _MiniStatCard(label: 'Total Sesi', value: '${history.length}',
+            icon: Icons.list_alt_rounded, color: primary)),
           SizedBox(width: cw * 0.03),
-          Expanded(
-            child: _MiniStatCard(
-              label: 'Rata-rata', value: '$avgScore',
-              icon: Icons.bar_chart_rounded, color: const Color(0xFFFB8C00),
-            ),
-          ),
+          Expanded(child: _MiniStatCard(label: 'Rata-rata', value: '$avgScore',
+            icon: Icons.bar_chart_rounded, color: const Color(0xFFFB8C00))),
           SizedBox(width: cw * 0.03),
-          Expanded(
-            child: _MiniStatCard(
-              label: 'Tertinggi', value: '$best',
-              icon: Icons.emoji_events_rounded, color: const Color(0xFF43A047),
-            ),
-          ),
+          Expanded(child: _MiniStatCard(label: 'Tertinggi', value: '$best',
+            icon: Icons.emoji_events_rounded, color: const Color(0xFF43A047))),
         ],
       ),
     );
@@ -231,48 +188,31 @@ class _SummaryHeader extends StatelessWidget {
 }
 
 class _MiniStatCard extends StatelessWidget {
-  final String label;
-  final String value;
+  final String label, value;
   final IconData icon;
   final Color color;
-  const _MiniStatCard({
-    required this.label, required this.value,
-    required this.icon, required this.color,
-  });
+  const _MiniStatCard({required this.label, required this.value, required this.icon, required this.color});
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
-    final theme = Theme.of(context);
+    final ch = Responsive.ch(context);
     final cw = Responsive.cw(context);
+    final theme = Theme.of(context);
     return Container(
-      padding: EdgeInsets.symmetric(
-        vertical: size.height * 0.014,
-        horizontal: cw * 0.02,
-      ),
+      padding: EdgeInsets.symmetric(vertical: ch * 0.014, horizontal: cw * 0.02),
       decoration: BoxDecoration(
-        color: theme.colorScheme.surface,
-        borderRadius: BorderRadius.circular(14),
-        boxShadow: [
-          BoxShadow(
-            color: theme.colorScheme.shadow.withValues(alpha: 0.05),
-            blurRadius: 8,
-            offset: const Offset(0, 3),
-          ),
-        ],
+        color: theme.colorScheme.surface, borderRadius: BorderRadius.circular(14),
+        boxShadow: [BoxShadow(color: theme.colorScheme.shadow.withValues(alpha: 0.05),
+          blurRadius: 8, offset: const Offset(0, 3))],
       ),
       child: Column(
         children: [
           Icon(icon, color: color, size: cw * 0.055),
-          SizedBox(height: size.height * 0.005),
-          Text(value, style: TextStyle(
-            fontFamily: 'Poppins', fontSize: cw * 0.052,
-            fontWeight: FontWeight.w800, color: color,
-          )),
-          Text(label, style: TextStyle(
-            fontFamily: 'Poppins', fontSize: cw * 0.028,
-            color: theme.colorScheme.onSurfaceVariant,
-          )),
+          SizedBox(height: ch * 0.005),
+          Text(value, style: TextStyle(fontFamily: 'Poppins', fontSize: cw * 0.052,
+            fontWeight: FontWeight.w800, color: color)),
+          Text(label, style: TextStyle(fontFamily: 'Poppins', fontSize: cw * 0.028,
+            color: theme.colorScheme.onSurfaceVariant)),
         ],
       ),
     );
@@ -285,46 +225,27 @@ class _TableHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
+    final ch = Responsive.ch(context);
     final cw = Responsive.cw(context);
     final primary = Theme.of(context).colorScheme.primary;
 
     return Container(
       color: primary,
-      padding: EdgeInsets.symmetric(
-        horizontal: cw * 0.04,
-        vertical: size.height * 0.013,
-      ),
+      padding: EdgeInsets.symmetric(horizontal: cw * 0.04, vertical: ch * 0.013),
       child: Row(
         children: [
-          SizedBox(
-            width: cw * 0.055,
-            child: Text('#', style: TextStyle(
-              fontFamily: 'Poppins', fontWeight: FontWeight.w700,
-              fontSize: cw * 0.028, color: Colors.white,
-            )),
-          ),
-          Expanded(
-            flex: 4,
-            child: Text('Nama / NIM / Mata Kuliah', style: TextStyle(
-              fontFamily: 'Poppins', fontWeight: FontWeight.w700,
-              fontSize: cw * 0.028, color: Colors.white,
-            )),
-          ),
-          SizedBox(
-            width: cw * 0.15,
-            child: Text('Skor', textAlign: TextAlign.center, style: TextStyle(
-              fontFamily: 'Poppins', fontWeight: FontWeight.w700,
-              fontSize: cw * 0.028, color: Colors.white,
-            )),
-          ),
-          Expanded(
-            flex: 2,
-            child: Text('Waktu', textAlign: TextAlign.end, style: TextStyle(
-              fontFamily: 'Poppins', fontWeight: FontWeight.w700,
-              fontSize: cw * 0.028, color: Colors.white,
-            )),
-          ),
+          SizedBox(width: cw * 0.055,
+            child: Text('#', style: TextStyle(fontFamily: 'Poppins', fontWeight: FontWeight.w700,
+              fontSize: cw * 0.028, color: Colors.white))),
+          Expanded(flex: 4,
+            child: Text('Nama / NIM / Mata Kuliah', style: TextStyle(fontFamily: 'Poppins',
+              fontWeight: FontWeight.w700, fontSize: cw * 0.028, color: Colors.white))),
+          SizedBox(width: cw * 0.15,
+            child: Text('Skor', textAlign: TextAlign.center, style: TextStyle(fontFamily: 'Poppins',
+              fontWeight: FontWeight.w700, fontSize: cw * 0.028, color: Colors.white))),
+          Expanded(flex: 2,
+            child: Text('Waktu', textAlign: TextAlign.end, style: TextStyle(fontFamily: 'Poppins',
+              fontWeight: FontWeight.w700, fontSize: cw * 0.028, color: Colors.white))),
         ],
       ),
     );
@@ -347,61 +268,43 @@ class _HistoryRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
-    final theme = Theme.of(context);
+    final ch = Responsive.ch(context);
     final cw = Responsive.cw(context);
+    final theme = Theme.of(context);
     final isEven = index % 2 == 0;
 
     return Container(
       color: isEven
           ? theme.colorScheme.surface
           : theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
-      padding: EdgeInsets.symmetric(
-        horizontal: cw * 0.04,
-        vertical: size.height * 0.012,
-      ),
+      padding: EdgeInsets.symmetric(horizontal: cw * 0.04, vertical: ch * 0.012),
       child: Row(
         children: [
-          SizedBox(
-            width: cw * 0.055,
-            child: Text('${index + 1}', style: TextStyle(
-              fontFamily: 'Poppins', fontSize: cw * 0.03,
-              fontWeight: FontWeight.w600,
-              color: theme.colorScheme.onSurfaceVariant,
-            )),
-          ),
+          SizedBox(width: cw * 0.055,
+            child: Text('${index + 1}', style: TextStyle(fontFamily: 'Poppins',
+              fontSize: cw * 0.03, fontWeight: FontWeight.w600,
+              color: theme.colorScheme.onSurfaceVariant))),
           Expanded(
             flex: 4,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(result.userName, style: TextStyle(
-                  fontFamily: 'Poppins', fontSize: cw * 0.032,
-                  fontWeight: FontWeight.w700,
-                  color: theme.colorScheme.onSurface,
-                ), overflow: TextOverflow.ellipsis),
-                Row(
-                  children: [
-                    Icon(Icons.badge_outlined, size: cw * 0.028,
-                        color: theme.colorScheme.onSurfaceVariant),
-                    const SizedBox(width: 3),
-                    Text(result.nim, style: TextStyle(
-                      fontFamily: 'Poppins', fontSize: cw * 0.027,
-                      color: theme.colorScheme.onSurfaceVariant,
-                      fontWeight: FontWeight.w500, letterSpacing: 0.5,
-                    )),
-                  ],
-                ),
-                Row(
-                  children: [
-                    Icon(subjectIcon, size: cw * 0.028, color: subjectColor),
-                    const SizedBox(width: 3),
-                    Flexible(child: Text(result.subject, style: TextStyle(
-                      fontFamily: 'Poppins', fontSize: cw * 0.025,
-                      color: subjectColor, fontWeight: FontWeight.w600,
-                    ), overflow: TextOverflow.ellipsis)),
-                  ],
-                ),
+                Text(result.userName, style: TextStyle(fontFamily: 'Poppins',
+                  fontSize: cw * 0.032, fontWeight: FontWeight.w700,
+                  color: theme.colorScheme.onSurface), overflow: TextOverflow.ellipsis),
+                Row(children: [
+                  Icon(Icons.badge_outlined, size: cw * 0.028, color: theme.colorScheme.onSurfaceVariant),
+                  const SizedBox(width: 3),
+                  Text(result.nim, style: TextStyle(fontFamily: 'Poppins', fontSize: cw * 0.027,
+                    color: theme.colorScheme.onSurfaceVariant, fontWeight: FontWeight.w500, letterSpacing: 0.5)),
+                ]),
+                Row(children: [
+                  Icon(subjectIcon, size: cw * 0.028, color: subjectColor),
+                  const SizedBox(width: 3),
+                  Flexible(child: Text(result.subject, style: TextStyle(fontFamily: 'Poppins',
+                    fontSize: cw * 0.025, color: subjectColor, fontWeight: FontWeight.w600),
+                    overflow: TextOverflow.ellipsis)),
+                ]),
               ],
             ),
           ),
@@ -409,19 +312,15 @@ class _HistoryRow extends StatelessWidget {
             width: cw * 0.15,
             child: Center(
               child: Container(
-                padding: EdgeInsets.symmetric(
-                  horizontal: cw * 0.02, vertical: size.height * 0.005,
-                ),
+                padding: EdgeInsets.symmetric(horizontal: cw * 0.02, vertical: ch * 0.005),
                 decoration: BoxDecoration(
                   color: scoreColor.withValues(alpha: 0.12),
                   borderRadius: BorderRadius.circular(8),
                   border: Border.all(color: scoreColor.withValues(alpha: 0.4)),
                 ),
                 child: Text('${result.score}', textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontFamily: 'Poppins', fontSize: cw * 0.036,
-                    fontWeight: FontWeight.w800, color: scoreColor,
-                  )),
+                  style: TextStyle(fontFamily: 'Poppins', fontSize: cw * 0.036,
+                    fontWeight: FontWeight.w800, color: scoreColor)),
               ),
             ),
           ),
@@ -429,8 +328,7 @@ class _HistoryRow extends StatelessWidget {
             flex: 2,
             child: Text(dateString, textAlign: TextAlign.end, style: TextStyle(
               fontFamily: 'Poppins', fontSize: cw * 0.024,
-              color: theme.colorScheme.onSurfaceVariant, height: 1.4,
-            )),
+              color: theme.colorScheme.onSurfaceVariant, height: 1.4)),
           ),
         ],
       ),
@@ -446,24 +344,20 @@ class _EmptyState extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cw = Responsive.cw(context);
-    final size = MediaQuery.of(context).size;
+    final ch = Responsive.ch(context);
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.history_edu_rounded,
-            size: cw * 0.2, color: primary.withValues(alpha: 0.3)),
-          SizedBox(height: size.height * 0.02),
-          Text('Belum ada riwayat kuis', style: TextStyle(
-            fontFamily: 'Poppins', fontSize: cw * 0.045,
-            fontWeight: FontWeight.w600,
-            color: Theme.of(context).colorScheme.onSurfaceVariant,
-          )),
-          SizedBox(height: size.height * 0.008),
-          Text('Selesaikan kuis pertamamu!', style: TextStyle(
-            fontFamily: 'Poppins', fontSize: cw * 0.036,
-            color: Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: 0.6),
-          )),
+          Icon(Icons.history_edu_rounded, size: cw * 0.2, color: primary.withValues(alpha: 0.3)),
+          SizedBox(height: ch * 0.02),
+          Text('Belum ada riwayat kuis', style: TextStyle(fontFamily: 'Poppins',
+            fontSize: cw * 0.045, fontWeight: FontWeight.w600,
+            color: Theme.of(context).colorScheme.onSurfaceVariant)),
+          SizedBox(height: ch * 0.008),
+          Text('Selesaikan kuis pertamamu!', style: TextStyle(fontFamily: 'Poppins',
+            fontSize: cw * 0.036,
+            color: Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: 0.6))),
         ],
       ),
     );

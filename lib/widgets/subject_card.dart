@@ -22,7 +22,7 @@ class SubjectCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
+    final ch = Responsive.ch(context);
     final theme = Theme.of(context);
     final cw = Responsive.cw(context);
     final accentColor = subjectColors[subject] ?? theme.colorScheme.primary;
@@ -41,7 +41,7 @@ class SubjectCard extends StatelessWidget {
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 250),
         curve: Curves.easeInOut,
-        margin: EdgeInsets.symmetric(vertical: size.height * 0.007),
+        margin: EdgeInsets.symmetric(vertical: ch * 0.007),
         padding: EdgeInsets.all(cw * 0.04),
         decoration: BoxDecoration(
           color: bgColor,
@@ -98,7 +98,7 @@ class SubjectCard extends StatelessWidget {
                       fontFamily: 'Poppins',
                     ),
                   ),
-                  SizedBox(height: size.height * 0.004),
+                  SizedBox(height: ch * 0.004),
                   Text(
                     description,
                     style: TextStyle(

@@ -9,15 +9,36 @@ class Responsive {
 
   /// Breakpoints
   static bool isWide(BuildContext context) =>
-      MediaQuery.of(context).size.width >= 600;
+      MediaQuery.of(context).size.width >= 600 && !isLandscape(context);
 
   static bool isExtraWide(BuildContext context) =>
-      MediaQuery.of(context).size.width >= 900;
+      MediaQuery.of(context).size.width >= 900 && !isLandscape(context);
+
+  /// Deteksi landscape di ponsel (lebar > tinggi dan tinggi pendek)
+  static bool isLandscape(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    return size.width > size.height && size.height < 500;
+  }
 
   /// Capped width — mensimulasikan lebar layar ponsel (max 450px)
-  /// sehingga size.width * factor tidak menggelembung di tablet/web.
   static double cw(BuildContext context) =>
       MediaQuery.of(context).size.width.clamp(0.0, 450.0);
+
+  /// Di landscape, ukuran font/widget mengacu pada TINGGI layar (lebih kecil),
+  /// bukan lebar, karena konten dibagi 2 kolom.
+  /// Di portrait / desktop, sama dengan cw.
+  static double cwBase(BuildContext context) {
+    if (isLandscape(context)) {
+      // tinggi landscape ponsel biasanya 360–420px, clamp jadi referensi
+      return MediaQuery.of(context).size.height.clamp(0.0, 420.0);
+    }
+    return cw(context);
+  }
+
+  /// Capped height — untuk spacing vertikal agar tidak terlalu kecil di landscape.
+  /// Minimum 700px supaya `height * factor` tetap reasonable.
+  static double ch(BuildContext context) =>
+      MediaQuery.of(context).size.height.clamp(500.0, 1200.0);
 
   /// Lebar maksimum konten untuk constrain layout di layar lebar.
   static double maxContentWidth(BuildContext context) {

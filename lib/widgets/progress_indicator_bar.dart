@@ -14,7 +14,7 @@ class QuizProgressBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
+    final ch = Responsive.ch(context);
     final theme = Theme.of(context);
     final cw = Responsive.cw(context);
     final progress = total == 0 ? 0.0 : (current + 1) / total;
@@ -22,32 +22,20 @@ class QuizProgressBar extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Label soal & total
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
-              'Soal ${current + 1} dari $total',
-              style: TextStyle(
-                fontSize: cw * 0.035,
-                fontWeight: FontWeight.w600,
-                color: theme.colorScheme.onSurfaceVariant,
-                fontFamily: 'Poppins',
-              ),
-            ),
-            Text(
-              '${((progress) * 100).round()}%',
-              style: TextStyle(
-                fontSize: cw * 0.035,
-                fontWeight: FontWeight.w700,
-                color: theme.colorScheme.primary,
-                fontFamily: 'Poppins',
-              ),
-            ),
+            Text('Soal ${current + 1} dari $total', style: TextStyle(
+              fontSize: cw * 0.035, fontWeight: FontWeight.w600,
+              color: theme.colorScheme.onSurfaceVariant, fontFamily: 'Poppins',
+            )),
+            Text('${((progress) * 100).round()}%', style: TextStyle(
+              fontSize: cw * 0.035, fontWeight: FontWeight.w700,
+              color: theme.colorScheme.primary, fontFamily: 'Poppins',
+            )),
           ],
         ),
-        SizedBox(height: size.height * 0.008),
-        // Bar progres animasi
+        SizedBox(height: ch * 0.008),
         ClipRRect(
           borderRadius: BorderRadius.circular(8),
           child: TweenAnimationBuilder<double>(
@@ -57,11 +45,9 @@ class QuizProgressBar extends StatelessWidget {
             builder: (context, value, _) {
               return LinearProgressIndicator(
                 value: value,
-                minHeight: size.height * 0.012,
+                minHeight: ch * 0.012,
                 backgroundColor: theme.colorScheme.surfaceContainerHighest,
-                valueColor: AlwaysStoppedAnimation<Color>(
-                  theme.colorScheme.primary,
-                ),
+                valueColor: AlwaysStoppedAnimation<Color>(theme.colorScheme.primary),
               );
             },
           ),

@@ -18,7 +18,7 @@ class AnswerOptionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
+    final ch = Responsive.ch(context);
     final theme = Theme.of(context);
     final cw = Responsive.cw(context);
 
@@ -65,10 +65,10 @@ class AnswerOptionCard extends StatelessWidget {
         duration: const Duration(milliseconds: 250),
         curve: Curves.easeInOut,
         width: double.infinity,
-        margin: EdgeInsets.symmetric(vertical: size.height * 0.006),
+        margin: EdgeInsets.symmetric(vertical: ch * 0.006),
         padding: EdgeInsets.symmetric(
           horizontal: cw * 0.04,
-          vertical: size.height * 0.016,
+          vertical: ch * 0.016,
         ),
         decoration: BoxDecoration(
           color: bgColor,

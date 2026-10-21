@@ -7,10 +7,8 @@ import '../widgets/custom_button.dart';
 import '../widgets/progress_indicator_bar.dart';
 import 'result_screen.dart';
 
-/// Durasi timer per soal (detik)
 const int kQuestionTimerSeconds = 30;
 
-/// Halaman Kuis – menampilkan soal pilihan ganda satu per satu dengan timer
 class QuizScreen extends StatefulWidget {
   const QuizScreen({super.key});
 
@@ -31,13 +29,11 @@ class _QuizScreenState extends State<QuizScreen>
   void initState() {
     super.initState();
     _questionAnimCtrl = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 350),
+      vsync: this, duration: const Duration(milliseconds: 350),
     );
     _questionFade = CurvedAnimation(parent: _questionAnimCtrl, curve: Curves.easeOut);
     _questionSlide = Tween<Offset>(
-      begin: const Offset(0.05, 0),
-      end: Offset.zero,
+      begin: const Offset(0.05, 0), end: Offset.zero,
     ).animate(CurvedAnimation(parent: _questionAnimCtrl, curve: Curves.easeOut));
     _questionAnimCtrl.forward();
     _startTimer();
@@ -53,19 +49,10 @@ class _QuizScreenState extends State<QuizScreen>
   void _startTimer() {
     _timer?.cancel();
     setState(() => _secondsLeft = kQuestionTimerSeconds);
-
     _timer = Timer.periodic(const Duration(seconds: 1), (t) {
-      if (!mounted) {
-        t.cancel();
-        return;
-      }
+      if (!mounted) { t.cancel(); return; }
       setState(() {
-        if (_secondsLeft > 0) {
-          _secondsLeft--;
-        } else {
-          t.cancel();
-          _onTimeOut();
-        }
+        if (_secondsLeft > 0) { _secondsLeft--; } else { t.cancel(); _onTimeOut(); }
       });
     });
   }
@@ -80,27 +67,20 @@ class _QuizScreenState extends State<QuizScreen>
     }
   }
 
-  void _resetTimerForNextQuestion() {
-    _timer?.cancel();
-    _startTimer();
-  }
+  void _resetTimerForNextQuestion() { _timer?.cancel(); _startTimer(); }
 
   void _animateToNext() {
-    _questionAnimCtrl.reverse().then((_) {
-      _questionAnimCtrl.forward();
-    });
+    _questionAnimCtrl.reverse().then((_) => _questionAnimCtrl.forward());
   }
 
   void _onNextOrFinish(QuizState state) {
     if (state.isLastQuestion) {
       _timer?.cancel();
       final result = state.finishQuiz();
-      Navigator.pushReplacement(
-        context,
+      Navigator.pushReplacement(context,
         PageRouteBuilder(
           pageBuilder: (_, anim, _) => FadeTransition(
-            opacity: anim,
-            child: ResultScreen(result: result),
+            opacity: anim, child: ResultScreen(result: result),
           ),
           transitionDuration: const Duration(milliseconds: 400),
         ),
@@ -122,15 +102,11 @@ class _QuizScreenState extends State<QuizScreen>
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         title: const Text('Keluar dari Kuis?',
           style: TextStyle(fontFamily: 'Poppins', fontWeight: FontWeight.w700)),
-        content: const Text(
-          'Progres kuis kamu akan hilang jika keluar sekarang.',
+        content: const Text('Progres kuis kamu akan hilang jika keluar sekarang.',
           style: TextStyle(fontFamily: 'Poppins')),
         actions: [
           TextButton(
-            onPressed: () {
-              Navigator.pop(context);
-              _startTimer();
-            },
+            onPressed: () { Navigator.pop(context); _startTimer(); },
             child: const Text('Lanjutkan', style: TextStyle(fontFamily: 'Poppins')),
           ),
           ElevatedButton(
@@ -159,10 +135,11 @@ class _QuizScreenState extends State<QuizScreen>
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
     final theme = Theme.of(context);
     final primary = theme.colorScheme.primary;
     final cw = Responsive.cw(context);
+    final ch = Responsive.ch(context);
+    final isLandscape = Responsive.isLandscape(context);
 
     return ListenableBuilder(
       listenable: QuizProvider.of(context),
@@ -207,13 +184,9 @@ class _QuizScreenState extends State<QuizScreen>
                         color: primary.withValues(alpha: 0.12),
                         borderRadius: BorderRadius.circular(20),
                       ),
-                      child: Text(
-                        '${state.currentIndex + 1}/${state.totalQuestions}',
-                        style: TextStyle(
-                          fontFamily: 'Poppins', fontWeight: FontWeight.w700,
-                          fontSize: cw * 0.036, color: primary,
-                        ),
-                      ),
+                      child: Text('${state.currentIndex + 1}/${state.totalQuestions}',
+                        style: TextStyle(fontFamily: 'Poppins', fontWeight: FontWeight.w700,
+                          fontSize: cw * 0.036, color: primary)),
                     ),
                   ),
                 ),
@@ -222,156 +195,11 @@ class _QuizScreenState extends State<QuizScreen>
             body: SafeArea(
               child: Responsive.constrain(
                 context: context,
-                child: LayoutBuilder(
-                  builder: (context, constraints) {
-                    return Padding(
-                      padding: EdgeInsets.symmetric(horizontal: cw * 0.055),
-                      child: Column(
-                        children: [
-                          SizedBox(height: size.height * 0.01),
-
-                          QuizProgressBar(
-                            current: state.currentIndex,
-                            total: state.totalQuestions,
-                          ),
-
-                          SizedBox(height: size.height * 0.018),
-
-                          _TimerWidget(
-                            secondsLeft: _secondsLeft,
-                            total: kQuestionTimerSeconds,
-                            timerColor: _timerColor(),
-                            answered: answered,
-                            timedOut: timedOut,
-                          ),
-
-                          SizedBox(height: size.height * 0.018),
-
-                          Expanded(
-                            child: SlideTransition(
-                              position: _questionSlide,
-                              child: FadeTransition(
-                                opacity: _questionFade,
-                                child: SingleChildScrollView(
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Row(
-                                        children: [
-                                          Container(
-                                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                                            decoration: BoxDecoration(
-                                              color: primary,
-                                              borderRadius: BorderRadius.circular(8),
-                                            ),
-                                            child: Text('Soal ${state.currentIndex + 1}',
-                                              style: const TextStyle(
-                                                color: Colors.white, fontFamily: 'Poppins',
-                                                fontWeight: FontWeight.w600, fontSize: 12,
-                                              )),
-                                          ),
-                                          if (timedOut) ...[
-                                            const SizedBox(width: 8),
-                                            Container(
-                                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                                              decoration: BoxDecoration(
-                                                color: const Color(0xFFE53935),
-                                                borderRadius: BorderRadius.circular(8),
-                                              ),
-                                              child: const Row(
-                                                mainAxisSize: MainAxisSize.min,
-                                                children: [
-                                                  Icon(Icons.timer_off_rounded, color: Colors.white, size: 14),
-                                                  SizedBox(width: 4),
-                                                  Text('Waktu Habis!', style: TextStyle(
-                                                    color: Colors.white, fontFamily: 'Poppins',
-                                                    fontWeight: FontWeight.w600, fontSize: 12,
-                                                  )),
-                                                ],
-                                              ),
-                                            ),
-                                          ],
-                                        ],
-                                      ),
-                                      SizedBox(height: size.height * 0.016),
-
-                                      Container(
-                                        width: double.infinity,
-                                        padding: EdgeInsets.all(cw * 0.05),
-                                        decoration: BoxDecoration(
-                                          color: theme.colorScheme.surface,
-                                          borderRadius: BorderRadius.circular(18),
-                                          boxShadow: [
-                                            BoxShadow(
-                                              color: theme.colorScheme.shadow.withValues(alpha: 0.06),
-                                              blurRadius: 12, offset: const Offset(0, 4),
-                                            ),
-                                          ],
-                                        ),
-                                        child: Text(question.questionText, style: TextStyle(
-                                          fontFamily: 'Poppins', fontSize: cw * 0.042,
-                                          fontWeight: FontWeight.w600, height: 1.55,
-                                          color: theme.colorScheme.onSurface,
-                                        )),
-                                      ),
-
-                                      SizedBox(height: size.height * 0.018),
-
-                                      ...List.generate(question.options.length, (i) {
-                                        AnswerState ansState;
-                                        final sel = state.currentSelectedAnswer;
-                                        if (sel == -1) {
-                                          ansState = AnswerState.normal;
-                                        } else if (i == question.correctIndex) {
-                                          ansState = AnswerState.correct;
-                                        } else if (i == sel && sel != -2) {
-                                          ansState = AnswerState.wrong;
-                                        } else {
-                                          ansState = AnswerState.normal;
-                                        }
-
-                                        return AnswerOptionCard(
-                                          label: labels[i],
-                                          optionText: question.options[i],
-                                          state: ansState,
-                                          onTap: answered
-                                              ? null
-                                              : () {
-                                                  _timer?.cancel();
-                                                  state.selectAnswer(i);
-                                                },
-                                        );
-                                      }),
-                                      SizedBox(height: size.height * 0.02),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-
-                          Padding(
-                            padding: EdgeInsets.only(
-                              top: size.height * 0.01,
-                              bottom: size.height * 0.025,
-                            ),
-                            child: Center(
-                              child: CustomButton(
-                                label: state.isLastQuestion
-                                    ? 'Selesaikan Kuis'
-                                    : 'Soal Berikutnya',
-                                onPressed: answered ? () => _onNextOrFinish(state) : null,
-                                icon: state.isLastQuestion
-                                    ? Icons.flag_rounded
-                                    : Icons.arrow_forward_rounded,
-                                backgroundColor: primary,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    );
-                  },
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: cw * 0.055),
+                  child: isLandscape
+                      ? _buildLandscapeBody(context, state, question, answered, timedOut, labels, cw, ch, theme, primary)
+                      : _buildPortraitBody(context, state, question, answered, timedOut, labels, cw, ch, theme, primary),
                 ),
               ),
             ),
@@ -380,15 +208,301 @@ class _QuizScreenState extends State<QuizScreen>
       },
     );
   }
+
+  // ── Portrait body ──────────────────────────────────────────────────────────
+  Widget _buildPortraitBody(BuildContext context, QuizState state, dynamic question,
+      bool answered, bool timedOut, List<String> labels,
+      double cw, double ch, ThemeData theme, Color primary) {
+    return Column(
+      children: [
+        SizedBox(height: ch * 0.01),
+        QuizProgressBar(current: state.currentIndex, total: state.totalQuestions),
+        SizedBox(height: ch * 0.018),
+        _TimerWidget(secondsLeft: _secondsLeft, total: kQuestionTimerSeconds,
+          timerColor: _timerColor(), answered: answered, timedOut: timedOut),
+        SizedBox(height: ch * 0.018),
+        Expanded(
+          child: SlideTransition(
+            position: _questionSlide,
+            child: FadeTransition(
+              opacity: _questionFade,
+              child: SingleChildScrollView(
+                child: _buildQuestionContent(state, question, answered, timedOut, labels, cw, ch, theme, primary),
+              ),
+            ),
+          ),
+        ),
+        Padding(
+          padding: EdgeInsets.only(top: ch * 0.01, bottom: ch * 0.025),
+          child: Center(
+            child: CustomButton(
+              label: state.isLastQuestion ? 'Selesaikan Kuis' : 'Soal Berikutnya',
+              onPressed: answered ? () => _onNextOrFinish(state) : null,
+              icon: state.isLastQuestion ? Icons.flag_rounded : Icons.arrow_forward_rounded,
+              backgroundColor: primary,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  // ── Landscape body (2 kolom: soal kiri, jawaban kanan) ──────────────────────
+  Widget _buildLandscapeBody(BuildContext context, QuizState state, dynamic question,
+      bool answered, bool timedOut, List<String> labels,
+      double cw, double ch, ThemeData theme, Color primary) {
+    return Column(
+      children: [
+        // Progress bar compact di atas
+        QuizProgressBar(current: state.currentIndex, total: state.totalQuestions),
+        const SizedBox(height: 8),
+        // 2 kolom: soal kiri, jawaban + tombol kanan
+        Expanded(
+          child: SlideTransition(
+            position: _questionSlide,
+            child: FadeTransition(
+              opacity: _questionFade,
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  // Kolom kiri: timer compact + soal
+                  Expanded(
+                    child: Column(
+                      children: [
+                        // Timer compact (tanpa progress bar panjang)
+                        _TimerCompact(
+                          secondsLeft: _secondsLeft,
+                          total: kQuestionTimerSeconds,
+                          timerColor: _timerColor(),
+                          answered: answered,
+                          timedOut: timedOut,
+                        ),
+                        const SizedBox(height: 8),
+                        // Badge soal
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: Row(
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                                decoration: BoxDecoration(color: primary, borderRadius: BorderRadius.circular(8)),
+                                child: Text('Soal ${state.currentIndex + 1}',
+                                  style: const TextStyle(color: Colors.white, fontFamily: 'Poppins',
+                                    fontWeight: FontWeight.w600, fontSize: 12)),
+                              ),
+                              if (timedOut) ...[
+                                const SizedBox(width: 8),
+                                Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                                  decoration: BoxDecoration(color: const Color(0xFFE53935), borderRadius: BorderRadius.circular(8)),
+                                  child: const Row(mainAxisSize: MainAxisSize.min, children: [
+                                    Icon(Icons.timer_off_rounded, color: Colors.white, size: 12),
+                                    SizedBox(width: 4),
+                                    Text('Waktu Habis!', style: TextStyle(color: Colors.white,
+                                      fontFamily: 'Poppins', fontWeight: FontWeight.w600, fontSize: 11)),
+                                  ]),
+                                ),
+                              ],
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        // Kartu soal (scrollable)
+                        Expanded(
+                          child: SingleChildScrollView(
+                            child: _buildQuestionCard(question, cw, ch, theme, primary, timedOut, state),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  // Kolom kanan: jawaban (scrollable) + tombol
+                  Expanded(
+                    child: Column(
+                      children: [
+                        Expanded(
+                          child: SingleChildScrollView(
+                            child: Column(
+                              children: List.generate(question.options.length, (i) {
+                                final ansState = _getAnswerState(state, question, i);
+                                return AnswerOptionCard(
+                                  label: labels[i],
+                                  optionText: question.options[i],
+                                  state: ansState,
+                                  onTap: answered ? null : () {
+                                    _timer?.cancel();
+                                    state.selectAnswer(i);
+                                  },
+                                );
+                              }),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        CustomButton(
+                          label: state.isLastQuestion ? 'Selesaikan Kuis' : 'Soal Berikutnya',
+                          onPressed: answered ? () => _onNextOrFinish(state) : null,
+                          icon: state.isLastQuestion ? Icons.flag_rounded : Icons.arrow_forward_rounded,
+                          backgroundColor: primary,
+                        ),
+                        const SizedBox(height: 8),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  // ── Question content (soal badge + kartu soal + opsi jawaban untuk portrait) ─
+  Widget _buildQuestionContent(QuizState state, dynamic question,
+      bool answered, bool timedOut, List<String> labels,
+      double cw, double ch, ThemeData theme, Color primary) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+              decoration: BoxDecoration(color: primary, borderRadius: BorderRadius.circular(8)),
+              child: Text('Soal ${state.currentIndex + 1}',
+                style: const TextStyle(color: Colors.white, fontFamily: 'Poppins',
+                  fontWeight: FontWeight.w600, fontSize: 12)),
+            ),
+            if (timedOut) ...[
+              const SizedBox(width: 8),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                decoration: BoxDecoration(color: const Color(0xFFE53935), borderRadius: BorderRadius.circular(8)),
+                child: const Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.timer_off_rounded, color: Colors.white, size: 14),
+                    SizedBox(width: 4),
+                    Text('Waktu Habis!', style: TextStyle(color: Colors.white,
+                      fontFamily: 'Poppins', fontWeight: FontWeight.w600, fontSize: 12)),
+                  ],
+                ),
+              ),
+            ],
+          ],
+        ),
+        SizedBox(height: ch * 0.016),
+        _buildQuestionCard(question, cw, ch, theme, primary, timedOut, state),
+        SizedBox(height: ch * 0.018),
+        ...List.generate(question.options.length, (i) {
+          final ansState = _getAnswerState(state, question, i);
+          return AnswerOptionCard(
+            label: labels[i],
+            optionText: question.options[i],
+            state: ansState,
+            onTap: answered ? null : () { _timer?.cancel(); state.selectAnswer(i); },
+          );
+        }),
+        SizedBox(height: ch * 0.02),
+      ],
+    );
+  }
+
+  Widget _buildQuestionCard(dynamic question, double cw, double ch, ThemeData theme, Color primary, bool timedOut, QuizState state) {
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.all(cw * 0.05),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surface,
+        borderRadius: BorderRadius.circular(18),
+        boxShadow: [
+          BoxShadow(color: theme.colorScheme.shadow.withValues(alpha: 0.06),
+            blurRadius: 12, offset: const Offset(0, 4)),
+        ],
+      ),
+      child: Text(question.questionText, style: TextStyle(
+        fontFamily: 'Poppins', fontSize: cw * 0.042,
+        fontWeight: FontWeight.w600, height: 1.55,
+        color: theme.colorScheme.onSurface,
+      )),
+    );
+  }
+
+  AnswerState _getAnswerState(QuizState state, dynamic question, int i) {
+    final sel = state.currentSelectedAnswer;
+    if (sel == -1) return AnswerState.normal;
+    if (i == question.correctIndex) return AnswerState.correct;
+    if (i == sel && sel != -2) return AnswerState.wrong;
+    return AnswerState.normal;
+  }
 }
 
-// ── Widget Timer Countdown ──────────────────────────────────────────────────────
-class _TimerWidget extends StatelessWidget {
-  final int secondsLeft;
-  final int total;
+// ── Widget Timer Compact untuk landscape ───────────────────────────────────────
+class _TimerCompact extends StatelessWidget {
+  final int secondsLeft, total;
   final Color timerColor;
-  final bool answered;
-  final bool timedOut;
+  final bool answered, timedOut;
+
+  const _TimerCompact({
+    required this.secondsLeft, required this.total,
+    required this.timerColor, required this.answered, required this.timedOut,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final cw = Responsive.cw(context);
+    final progress = answered ? 0.0 : secondsLeft / total;
+    final displaySeconds = answered && !timedOut ? total : secondsLeft;
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surface,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [BoxShadow(color: theme.colorScheme.shadow.withValues(alpha: 0.05),
+          blurRadius: 6, offset: const Offset(0, 2))],
+      ),
+      child: Row(
+        children: [
+          Icon(timedOut ? Icons.timer_off_rounded : Icons.timer_outlined,
+            color: timerColor, size: 18),
+          const SizedBox(width: 8),
+          Expanded(
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(4),
+              child: LinearProgressIndicator(
+                value: progress,
+                minHeight: 6,
+                backgroundColor: theme.colorScheme.surfaceContainerHighest,
+                valueColor: AlwaysStoppedAnimation<Color>(timerColor),
+              ),
+            ),
+          ),
+          const SizedBox(width: 8),
+          Container(
+            width: cw * 0.1, height: cw * 0.1,
+            decoration: BoxDecoration(
+              color: timerColor.withValues(alpha: 0.1), shape: BoxShape.circle,
+              border: Border.all(color: timerColor.withValues(alpha: 0.5), width: 1.5),
+            ),
+            child: Center(child: Text('$displaySeconds', style: TextStyle(
+              fontFamily: 'Poppins', fontSize: cw * 0.035,
+              fontWeight: FontWeight.w800, color: timerColor))),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ── Widget Timer Countdown (Portrait) ──────────────────────────────────────────
+class _TimerWidget extends StatelessWidget {
+  final int secondsLeft, total;
+  final Color timerColor;
+  final bool answered, timedOut;
 
   const _TimerWidget({
     required this.secondsLeft, required this.total,
@@ -397,26 +511,21 @@ class _TimerWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
     final theme = Theme.of(context);
     final cw = Responsive.cw(context);
+    final ch = Responsive.ch(context);
     final progress = answered ? 0.0 : secondsLeft / total;
     final displaySeconds = answered && !timedOut ? total : secondsLeft;
 
     return Container(
       width: double.infinity,
-      padding: EdgeInsets.symmetric(
-        horizontal: cw * 0.045,
-        vertical: size.height * 0.014,
-      ),
+      padding: EdgeInsets.symmetric(horizontal: cw * 0.045, vertical: ch * 0.014),
       decoration: BoxDecoration(
         color: theme.colorScheme.surface,
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
-          BoxShadow(
-            color: theme.colorScheme.shadow.withValues(alpha: 0.05),
-            blurRadius: 8, offset: const Offset(0, 3),
-          ),
+          BoxShadow(color: theme.colorScheme.shadow.withValues(alpha: 0.05),
+            blurRadius: 8, offset: const Offset(0, 3)),
         ],
       ),
       child: Row(
@@ -424,14 +533,9 @@ class _TimerWidget extends StatelessWidget {
           AnimatedContainer(
             duration: const Duration(milliseconds: 300),
             padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: timerColor.withValues(alpha: 0.12),
-              shape: BoxShape.circle,
-            ),
-            child: Icon(
-              timedOut ? Icons.timer_off_rounded : Icons.timer_outlined,
-              color: timerColor, size: cw * 0.055,
-            ),
+            decoration: BoxDecoration(color: timerColor.withValues(alpha: 0.12), shape: BoxShape.circle),
+            child: Icon(timedOut ? Icons.timer_off_rounded : Icons.timer_outlined,
+              color: timerColor, size: cw * 0.055),
           ),
           SizedBox(width: cw * 0.03),
           Expanded(
@@ -439,17 +543,11 @@ class _TimerWidget extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  timedOut
-                      ? 'Waktu Habis!'
-                      : answered
-                          ? 'Soal Terjawab'
-                          : 'Sisa Waktu',
-                  style: TextStyle(
-                    fontFamily: 'Poppins', fontSize: cw * 0.03,
-                    color: theme.colorScheme.onSurfaceVariant,
-                  ),
+                  timedOut ? 'Waktu Habis!' : answered ? 'Soal Terjawab' : 'Sisa Waktu',
+                  style: TextStyle(fontFamily: 'Poppins', fontSize: cw * 0.03,
+                    color: theme.colorScheme.onSurfaceVariant),
                 ),
-                SizedBox(height: size.height * 0.005),
+                SizedBox(height: ch * 0.005),
                 ClipRRect(
                   borderRadius: BorderRadius.circular(4),
                   child: TweenAnimationBuilder<double>(
@@ -457,7 +555,7 @@ class _TimerWidget extends StatelessWidget {
                     duration: const Duration(milliseconds: 300),
                     builder: (_, val, _) => LinearProgressIndicator(
                       value: val,
-                      minHeight: size.height * 0.008,
+                      minHeight: ch * 0.008,
                       backgroundColor: theme.colorScheme.surfaceContainerHighest,
                       valueColor: AlwaysStoppedAnimation<Color>(timerColor),
                     ),
@@ -469,18 +567,15 @@ class _TimerWidget extends StatelessWidget {
           SizedBox(width: cw * 0.03),
           AnimatedContainer(
             duration: const Duration(milliseconds: 300),
-            width: cw * 0.14,
-            height: cw * 0.14,
+            width: cw * 0.14, height: cw * 0.14,
             decoration: BoxDecoration(
-              color: timerColor.withValues(alpha: 0.1),
-              shape: BoxShape.circle,
+              color: timerColor.withValues(alpha: 0.1), shape: BoxShape.circle,
               border: Border.all(color: timerColor.withValues(alpha: 0.5), width: 2),
             ),
             child: Center(
               child: Text('$displaySeconds', style: TextStyle(
                 fontFamily: 'Poppins', fontSize: cw * 0.048,
-                fontWeight: FontWeight.w800, color: timerColor,
-              )),
+                fontWeight: FontWeight.w800, color: timerColor)),
             ),
           ),
         ],
