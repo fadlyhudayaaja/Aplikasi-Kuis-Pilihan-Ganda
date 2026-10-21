@@ -56,7 +56,7 @@ class QuizProgressBar extends StatelessWidget {
               return LinearProgressIndicator(
                 value: value,
                 minHeight: size.height * 0.012,
-                backgroundColor: theme.colorScheme.surfaceVariant,
+                backgroundColor: theme.colorScheme.surfaceContainerHighest,
                 valueColor: AlwaysStoppedAnimation<Color>(
                   theme.colorScheme.primary,
                 ),

@@ -3,10 +3,9 @@ import '../data/quiz_data.dart';
 import '../providers/quiz_provider.dart';
 import '../widgets/custom_button.dart';
 import '../widgets/subject_card.dart';
-import 'history_screen.dart';
 import 'quiz_screen.dart';
 
-/// Halaman Awal – input nama, pilih mata kuliah, mulai kuis atau lihat riwayat
+/// Halaman Awal – input nama, NIM, pilih mata kuliah, mulai kuis atau lihat riwayat
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -17,6 +16,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen>
     with SingleTickerProviderStateMixin {
   final _nameController = TextEditingController();
+  final _nimController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   String? _selectedSubject;
   late AnimationController _headerAnimCtrl;
@@ -44,6 +44,7 @@ class _HomeScreenState extends State<HomeScreen>
   @override
   void dispose() {
     _nameController.dispose();
+    _nimController.dispose();
     _headerAnimCtrl.dispose();
     super.dispose();
   }
@@ -69,13 +70,14 @@ class _HomeScreenState extends State<HomeScreen>
     final state = QuizProvider.of(context);
     state.startQuiz(
       userName: _nameController.text.trim(),
+      nim: _nimController.text.trim(),
       subject: _selectedSubject!,
     );
 
     Navigator.push(
       context,
       PageRouteBuilder(
-        pageBuilder: (_, anim, __) => FadeTransition(
+        pageBuilder: (_, anim, _) => FadeTransition(
           opacity: anim,
           child: const QuizScreen(),
         ),
@@ -112,23 +114,38 @@ class _HomeScreenState extends State<HomeScreen>
                       children: [
                         Row(
                           children: [
+                            // Logo aplikasi di header
                             Container(
-                              padding: const EdgeInsets.all(10),
+                              width: 48,
+                              height: 48,
                               decoration: BoxDecoration(
-                                gradient: LinearGradient(
-                                  colors: [
-                                    primaryColor,
-                                    primaryColor.withOpacity(0.7)
-                                  ],
-                                  begin: Alignment.topLeft,
-                                  end: Alignment.bottomRight,
-                                ),
                                 borderRadius: BorderRadius.circular(14),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: primaryColor.withValues(alpha: 0.25),
+                                    blurRadius: 10,
+                                    offset: const Offset(0, 4),
+                                  ),
+                                ],
                               ),
-                              child: const Icon(
-                                Icons.quiz_rounded,
-                                color: Colors.white,
-                                size: 28,
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(14),
+                                child: Image.asset(
+                                  'assets/images/app_logo.png',
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (_, _, _) => Container(
+                                    padding: const EdgeInsets.all(10),
+                                    decoration: BoxDecoration(
+                                      color: primaryColor,
+                                      borderRadius: BorderRadius.circular(14),
+                                    ),
+                                    child: const Icon(
+                                      Icons.quiz_rounded,
+                                      color: Colors.white,
+                                      size: 26,
+                                    ),
+                                  ),
+                                ),
                               ),
                             ),
                             const SizedBox(width: 12),
@@ -175,7 +192,7 @@ class _HomeScreenState extends State<HomeScreen>
                             borderRadius: BorderRadius.circular(20),
                             boxShadow: [
                               BoxShadow(
-                                color: primaryColor.withOpacity(0.3),
+                                color: primaryColor.withValues(alpha: 0.3),
                                 blurRadius: 20,
                                 offset: const Offset(0, 8),
                               ),
@@ -198,9 +215,9 @@ class _HomeScreenState extends State<HomeScreen>
                                     ),
                                     SizedBox(height: size.height * 0.006),
                                     Text(
-                                      'Isi namamu & pilih mata kuliah\nuntuk memulai kuis.',
+                                      'Isi identitasmu & pilih mata kuliah\nuntuk memulai kuis.',
                                       style: TextStyle(
-                                        color: Colors.white.withOpacity(0.85),
+                                        color: Colors.white.withValues(alpha: 0.85),
                                         fontSize: size.width * 0.033,
                                         fontFamily: 'Poppins',
                                         height: 1.5,
@@ -209,9 +226,10 @@ class _HomeScreenState extends State<HomeScreen>
                                   ],
                                 ),
                               ),
-                              Text(
-                                '🎓',
-                                style: TextStyle(fontSize: size.width * 0.15),
+                              Icon(
+                                Icons.school_rounded,
+                                color: Colors.white.withValues(alpha: 0.4),
+                                size: size.width * 0.18,
                               ),
                             ],
                           ),
@@ -223,9 +241,11 @@ class _HomeScreenState extends State<HomeScreen>
 
                 SizedBox(height: size.height * 0.035),
 
-                // ── Form Input Nama ──────────────────────────────────────────
-                _SectionLabel(label: 'Nama Peserta'),
+                // ── Identitas Peserta ────────────────────────────────────────
+                const _SectionLabel(label: 'Identitas Peserta'),
                 SizedBox(height: size.height * 0.012),
+
+                // Input Nama
                 TextFormField(
                   controller: _nameController,
                   textCapitalization: TextCapitalization.words,
@@ -234,17 +254,24 @@ class _HomeScreenState extends State<HomeScreen>
                     fontSize: size.width * 0.04,
                   ),
                   decoration: InputDecoration(
-                    hintText: 'Masukkan nama lengkap...',
+                    hintText: 'Nama lengkap...',
                     hintStyle: TextStyle(
                       fontFamily: 'Poppins',
                       fontSize: size.width * 0.038,
-                      color: theme.colorScheme.onSurfaceVariant.withOpacity(0.6),
+                      color:
+                          theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.6),
                     ),
                     prefixIcon: Icon(
                       Icons.person_outline_rounded,
                       color: primaryColor,
                     ),
                     fillColor: Colors.white,
+                    labelText: 'Nama',
+                    labelStyle: TextStyle(
+                      fontFamily: 'Poppins',
+                      color: primaryColor,
+                      fontSize: size.width * 0.036,
+                    ),
                   ),
                   validator: (value) {
                     if (value == null || value.trim().isEmpty) {
@@ -257,15 +284,58 @@ class _HomeScreenState extends State<HomeScreen>
                   },
                 ),
 
+                SizedBox(height: size.height * 0.016),
+
+                // Input NIM
+                TextFormField(
+                  controller: _nimController,
+                  keyboardType: TextInputType.number,
+                  style: TextStyle(
+                    fontFamily: 'Poppins',
+                    fontSize: size.width * 0.04,
+                    letterSpacing: 1.2,
+                  ),
+                  decoration: InputDecoration(
+                    hintText: 'Nomor Induk Mahasiswa...',
+                    hintStyle: TextStyle(
+                      fontFamily: 'Poppins',
+                      fontSize: size.width * 0.038,
+                      letterSpacing: 0,
+                      color:
+                          theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.6),
+                    ),
+                    prefixIcon: Icon(
+                      Icons.badge_outlined,
+                      color: primaryColor,
+                    ),
+                    fillColor: Colors.white,
+                    labelText: 'NIM',
+                    labelStyle: TextStyle(
+                      fontFamily: 'Poppins',
+                      color: primaryColor,
+                      fontSize: size.width * 0.036,
+                    ),
+                  ),
+                  validator: (value) {
+                    if (value == null || value.trim().isEmpty) {
+                      return 'NIM tidak boleh kosong';
+                    }
+                    if (value.trim().length < 6) {
+                      return 'NIM minimal 6 digit';
+                    }
+                    return null;
+                  },
+                ),
+
                 SizedBox(height: size.height * 0.03),
 
                 // ── Pilihan Mata Kuliah ──────────────────────────────────────
-                _SectionLabel(label: 'Pilih Mata Kuliah'),
+                const _SectionLabel(label: 'Pilih Mata Kuliah'),
                 SizedBox(height: size.height * 0.012),
                 ...subjects.map((subject) {
                   return SubjectCard(
                     subject: subject,
-                    emoji: subjectIcons[subject] ?? '📚',
+                    iconData: subjectIcons[subject] ?? Icons.book_rounded,
                     description: subjectDescriptions[subject] ?? '',
                     isSelected: _selectedSubject == subject,
                     onTap: () => setState(() => _selectedSubject = subject),
@@ -284,21 +354,6 @@ class _HomeScreenState extends State<HomeScreen>
                         icon: Icons.play_arrow_rounded,
                         backgroundColor: primaryColor,
                       ),
-                      SizedBox(height: size.height * 0.016),
-                      CustomButton(
-                        label: 'Lihat Riwayat',
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => const HistoryScreen(),
-                            ),
-                          );
-                        },
-                        icon: Icons.history_rounded,
-                        isOutlined: true,
-                        backgroundColor: primaryColor,
-                      ),
                     ],
                   ),
                 ),
@@ -313,7 +368,7 @@ class _HomeScreenState extends State<HomeScreen>
   }
 }
 
-// ── Label section heading reusable di dalam layar ini ─────────────────────────
+// ── Label section heading ──────────────────────────────────────────────────────
 class _SectionLabel extends StatelessWidget {
   final String label;
   const _SectionLabel({required this.label});

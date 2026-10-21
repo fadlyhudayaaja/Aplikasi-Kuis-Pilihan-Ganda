@@ -2,10 +2,9 @@ import 'package:flutter/material.dart';
 import '../models/quiz_result.dart';
 import '../providers/quiz_provider.dart';
 import '../widgets/custom_button.dart';
-import 'history_screen.dart';
-import 'home_screen.dart';
+import 'main_screen.dart';
 
-/// Halaman Hasil – menampilkan skor akhir, jawaban benar/salah
+/// Halaman Hasil – menampilkan skor akhir, NIM, statistik
 class ResultScreen extends StatefulWidget {
   final QuizResult result;
   const ResultScreen({super.key, required this.result});
@@ -36,13 +35,13 @@ class _ResultScreenState extends State<ResultScreen>
       duration: const Duration(milliseconds: 600),
     );
 
-    _scoreFade = CurvedAnimation(
-        parent: _scoreAnimCtrl, curve: Curves.easeOut);
+    _scoreFade =
+        CurvedAnimation(parent: _scoreAnimCtrl, curve: Curves.easeOut);
     _scoreScale = Tween<double>(begin: 0.5, end: 1.0).animate(
       CurvedAnimation(parent: _scoreAnimCtrl, curve: Curves.elasticOut),
     );
-    _cardFade = CurvedAnimation(
-        parent: _cardAnimCtrl, curve: Curves.easeOut);
+    _cardFade =
+        CurvedAnimation(parent: _cardAnimCtrl, curve: Curves.easeOut);
     _cardSlide = Tween<Offset>(
       begin: const Offset(0, 0.2),
       end: Offset.zero,
@@ -126,7 +125,7 @@ class _ResultScreenState extends State<ResultScreen>
                       color: Colors.white,
                       boxShadow: [
                         BoxShadow(
-                          color: sColor.withOpacity(0.3),
+                          color: sColor.withValues(alpha: 0.3),
                           blurRadius: 30,
                           spreadRadius: 5,
                         ),
@@ -183,13 +182,22 @@ class _ResultScreenState extends State<ResultScreen>
                   opacity: _cardFade,
                   child: Column(
                     children: [
-                      // Info pengguna & mata kuliah
+                      // Info pengguna (nama, NIM, mapel, waktu)
                       _InfoCard(
                         children: [
                           _InfoRow(
                             icon: Icons.person_rounded,
                             label: 'Nama',
                             value: result.userName,
+                            color: primary,
+                          ),
+                          Divider(
+                              height: size.height * 0.02,
+                              color: Colors.grey.shade200),
+                          _InfoRow(
+                            icon: Icons.badge_rounded,
+                            label: 'NIM',
+                            value: result.nim,
                             color: primary,
                           ),
                           Divider(
@@ -224,7 +232,7 @@ class _ResultScreenState extends State<ResultScreen>
                               label: 'Total Soal',
                               value: '${result.totalQuestions}',
                               iconColor: primary,
-                              bgColor: primary.withOpacity(0.1),
+                              bgColor: primary.withValues(alpha: 0.1),
                             ),
                           ),
                           SizedBox(width: size.width * 0.03),
@@ -252,7 +260,7 @@ class _ResultScreenState extends State<ResultScreen>
 
                       SizedBox(height: size.height * 0.018),
 
-                      // Progress bar persentase
+                      // Progress bar akurasi
                       _InfoCard(
                         children: [
                           Row(
@@ -283,8 +291,7 @@ class _ResultScreenState extends State<ResultScreen>
                             borderRadius: BorderRadius.circular(8),
                             child: TweenAnimationBuilder<double>(
                               tween: Tween(
-                                  begin: 0,
-                                  end: result.percentage / 100),
+                                  begin: 0, end: result.percentage / 100),
                               duration: const Duration(milliseconds: 900),
                               curve: Curves.easeInOut,
                               builder: (ctx, val, _) {
@@ -318,11 +325,15 @@ class _ResultScreenState extends State<ResultScreen>
                       CustomButton(
                         label: 'Lihat Riwayat',
                         onPressed: () {
-                          Navigator.pushReplacement(
+                          final state = QuizProvider.of(context);
+                          state.resetQuiz();
+                          state.requestTab(1); // Switch ke tab Histori
+                          Navigator.pushAndRemoveUntil(
                             context,
                             MaterialPageRoute(
-                              builder: (_) => const HistoryScreen(),
+                              builder: (_) => const MainScreen(),
                             ),
+                            (_) => false,
                           );
                         },
                         icon: Icons.history_rounded,
@@ -332,11 +343,13 @@ class _ResultScreenState extends State<ResultScreen>
                       CustomButton(
                         label: 'Kembali ke Beranda',
                         onPressed: () {
-                          QuizProvider.of(context).resetQuiz();
+                          final state = QuizProvider.of(context);
+                          state.resetQuiz();
+                          state.requestTab(0); // Switch ke tab Beranda
                           Navigator.pushAndRemoveUntil(
                             context,
                             MaterialPageRoute(
-                              builder: (_) => const HomeScreen(),
+                              builder: (_) => const MainScreen(),
                             ),
                             (_) => false,
                           );
@@ -359,8 +372,19 @@ class _ResultScreenState extends State<ResultScreen>
 
   String _formatDateTime(DateTime dt) {
     final months = [
-      '', 'Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun',
-      'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'
+      '',
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'Mei',
+      'Jun',
+      'Jul',
+      'Agu',
+      'Sep',
+      'Okt',
+      'Nov',
+      'Des'
     ];
     final hour = dt.hour.toString().padLeft(2, '0');
     final minute = dt.minute.toString().padLeft(2, '0');
@@ -384,7 +408,7 @@ class _InfoCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(18),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.06),
+            color: Colors.black.withValues(alpha: 0.06),
             blurRadius: 12,
             offset: const Offset(0, 4),
           ),
@@ -398,7 +422,7 @@ class _InfoCard extends StatelessWidget {
   }
 }
 
-// ── Satu baris info (ikon + label + nilai) ─────────────────────────────────────
+// ── Satu baris info ────────────────────────────────────────────────────────────
 class _InfoRow extends StatelessWidget {
   final IconData icon;
   final String label;
@@ -444,7 +468,7 @@ class _InfoRow extends StatelessWidget {
   }
 }
 
-// ── Kartu statistik (total/benar/salah) ───────────────────────────────────────
+// ── Kartu statistik kecil ─────────────────────────────────────────────────────
 class _StatCard extends StatelessWidget {
   final IconData icon;
   final String label;
@@ -472,7 +496,7 @@ class _StatCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 10,
             offset: const Offset(0, 3),
           ),

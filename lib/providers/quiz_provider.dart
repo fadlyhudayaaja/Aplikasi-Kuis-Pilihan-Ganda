@@ -33,6 +33,7 @@ class QuizState extends ChangeNotifier {
 
   // ── State sesi kuis aktif ───────────────────────────────────────────────────
   String _userName = '';
+  String _nim = '';
   String _selectedSubject = '';
   List<Question> _questions = [];
   int _currentIndex = 0;
@@ -40,11 +41,25 @@ class QuizState extends ChangeNotifier {
   int _correctAnswers = 0;
   int _wrongAnswers = 0;
 
-  // Menyimpan index jawaban yang dipilih per soal (-1 = belum dijawab)
+  // Menyimpan index jawaban yang dipilih per soal (-1 = belum dijawab, -2 = timeout)
   List<int> _selectedAnswers = [];
+
+  // ── Request tab switch dari MainScreen (untuk navigasi setelah kuis selesai)
+  int _requestedTabIndex = -1;
+  int get requestedTabIndex => _requestedTabIndex;
+
+  void requestTab(int index) {
+    _requestedTabIndex = index;
+    notifyListeners();
+  }
+
+  void clearTabRequest() {
+    _requestedTabIndex = -1;
+  }
 
   // Getters
   String get userName => _userName;
+  String get nim => _nim;
   String get selectedSubject => _selectedSubject;
   List<Question> get questions => _questions;
   int get currentIndex => _currentIndex;
@@ -61,8 +76,13 @@ class QuizState extends ChangeNotifier {
       _selectedAnswers.isNotEmpty ? _selectedAnswers[_currentIndex] : -1;
 
   // ── Memulai sesi kuis baru ──────────────────────────────────────────────────
-  void startQuiz({required String userName, required String subject}) {
+  void startQuiz({
+    required String userName,
+    required String nim,
+    required String subject,
+  }) {
     _userName = userName;
+    _nim = nim;
     _selectedSubject = subject;
     _questions = questionBank[subject] ?? [];
     _currentIndex = 0;
@@ -86,6 +106,14 @@ class QuizState extends ChangeNotifier {
     notifyListeners();
   }
 
+  // ── Timeout soal (waktu habis, soal dihitung salah) ─────────────────────────
+  void timeoutQuestion() {
+    if (_selectedAnswers[_currentIndex] != -1) return; // sudah dijawab
+    _selectedAnswers[_currentIndex] = -2; // kode timeout
+    _wrongAnswers++;
+    notifyListeners();
+  }
+
   // ── Pindah ke soal berikutnya ───────────────────────────────────────────────
   void nextQuestion() {
     if (!isLastQuestion) {
@@ -100,6 +128,7 @@ class QuizState extends ChangeNotifier {
 
     final result = QuizResult(
       userName: _userName,
+      nim: _nim,
       subject: _selectedSubject,
       score: _score,
       totalQuestions: _questions.length,
@@ -116,6 +145,7 @@ class QuizState extends ChangeNotifier {
   // ── Reset state sesi (kembali ke home) ─────────────────────────────────────
   void resetQuiz() {
     _userName = '';
+    _nim = '';
     _selectedSubject = '';
     _questions = [];
     _currentIndex = 0;

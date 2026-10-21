@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import '../models/question.dart';
 import '../models/quiz_result.dart';
 
@@ -9,10 +10,18 @@ const List<String> subjects = [
   'Kriptografi',
 ];
 
-const Map<String, String> subjectIcons = {
-  'Pemrograman Mobile': '📱',
-  'Jaringan Komputer': '🌐',
-  'Kriptografi': '🔐',
+// Menggunakan IconData bukan emoji
+const Map<String, IconData> subjectIcons = {
+  'Pemrograman Mobile': Icons.smartphone_rounded,
+  'Jaringan Komputer': Icons.lan_rounded,
+  'Kriptografi': Icons.lock_rounded,
+};
+
+// Warna aksen per mata kuliah
+const Map<String, Color> subjectColors = {
+  'Pemrograman Mobile': Color(0xFF6C63FF),
+  'Jaringan Komputer': Color(0xFF0097A7),
+  'Kriptografi': Color(0xFF43A047),
 };
 
 const Map<String, String> subjectDescriptions = {
@@ -225,6 +234,7 @@ const Map<String, List<Question>> questionBank = {
 final List<QuizResult> dummyHistory = [
   QuizResult(
     userName: 'Budi Santoso',
+    nim: '231402001',
     subject: 'Pemrograman Mobile',
     score: 80,
     totalQuestions: 10,
@@ -234,6 +244,7 @@ final List<QuizResult> dummyHistory = [
   ),
   QuizResult(
     userName: 'Siti Rahayu',
+    nim: '231402045',
     subject: 'Jaringan Komputer',
     score: 70,
     totalQuestions: 10,
@@ -243,6 +254,7 @@ final List<QuizResult> dummyHistory = [
   ),
   QuizResult(
     userName: 'Andi Wijaya',
+    nim: '231402078',
     subject: 'Kriptografi',
     score: 90,
     totalQuestions: 10,
@@ -252,6 +264,7 @@ final List<QuizResult> dummyHistory = [
   ),
   QuizResult(
     userName: 'Dewi Lestari',
+    nim: '231402112',
     subject: 'Pemrograman Mobile',
     score: 60,
     totalQuestions: 10,
@@ -261,6 +274,7 @@ final List<QuizResult> dummyHistory = [
   ),
   QuizResult(
     userName: 'Rizky Pratama',
+    nim: '231402055',
     subject: 'Jaringan Komputer',
     score: 100,
     totalQuestions: 10,

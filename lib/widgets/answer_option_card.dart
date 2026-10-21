@@ -42,19 +42,19 @@ class AnswerOptionCard extends StatelessWidget {
         trailingIcon = Icons.cancel_rounded;
         break;
       case AnswerState.selected:
-        bgColor = theme.colorScheme.primary.withOpacity(0.12);
+        bgColor = theme.colorScheme.primary.withValues(alpha: 0.12);
         borderColor = theme.colorScheme.primary;
         labelColor = theme.colorScheme.primary;
         textColor = theme.colorScheme.primary;
         trailingIcon = null;
         break;
       case AnswerState.normal:
-      default:
         bgColor = theme.colorScheme.surface;
-        borderColor = theme.colorScheme.outline.withOpacity(0.4);
+        borderColor = theme.colorScheme.outline.withValues(alpha: 0.4);
         labelColor = theme.colorScheme.onSurfaceVariant;
         textColor = theme.colorScheme.onSurface;
         trailingIcon = null;
+        break;
     }
 
     return GestureDetector(
@@ -74,7 +74,7 @@ class AnswerOptionCard extends StatelessWidget {
           border: Border.all(color: borderColor, width: 1.8),
           boxShadow: [
             BoxShadow(
-              color: borderColor.withOpacity(0.15),
+              color: borderColor.withValues(alpha: 0.15),
               blurRadius: 6,
               offset: const Offset(0, 3),
             ),
@@ -87,7 +87,7 @@ class AnswerOptionCard extends StatelessWidget {
               width: size.width * 0.09,
               height: size.width * 0.09,
               decoration: BoxDecoration(
-                color: labelColor.withOpacity(0.15),
+                color: labelColor.withValues(alpha: 0.15),
                 shape: BoxShape.circle,
               ),
               child: Center(

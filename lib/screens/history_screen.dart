@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import '../models/quiz_result.dart';
+import '../data/quiz_data.dart';
 import '../providers/quiz_provider.dart';
 
-/// Halaman Riwayat – menampilkan tabel/list semua riwayat kuis
+/// Halaman Riwayat – tabel riwayat kuis dengan NIM dan statistik ringkasan
 class HistoryScreen extends StatelessWidget {
   const HistoryScreen({super.key});
 
@@ -14,21 +15,23 @@ class HistoryScreen extends StatelessWidget {
 
   String _formatDateTime(DateTime dt) {
     final months = [
-      '', 'Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun',
-      'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'
+      '',
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'Mei',
+      'Jun',
+      'Jul',
+      'Agu',
+      'Sep',
+      'Okt',
+      'Nov',
+      'Des'
     ];
     final hour = dt.hour.toString().padLeft(2, '0');
     final minute = dt.minute.toString().padLeft(2, '0');
     return '${dt.day} ${months[dt.month]} ${dt.year}\n$hour:$minute WIB';
-  }
-
-  String _subjectIcon(String subject) {
-    const icons = {
-      'Pemrograman Mobile': '📱',
-      'Jaringan Komputer': '🌐',
-      'Kriptografi': '🔐',
-    };
-    return icons[subject] ?? '📚';
   }
 
   @override
@@ -45,56 +48,93 @@ class HistoryScreen extends StatelessWidget {
 
         return Scaffold(
           backgroundColor: const Color(0xFFF4F3FF),
-          appBar: AppBar(
-            backgroundColor: Colors.transparent,
-            elevation: 0,
-            leading: IconButton(
-              icon: Icon(Icons.arrow_back_rounded, color: primary),
-              onPressed: () => Navigator.pop(context),
-            ),
-            title: Text(
-              'Riwayat Kuis',
-              style: TextStyle(
-                fontFamily: 'Poppins',
-                fontWeight: FontWeight.w700,
-                fontSize: size.width * 0.048,
-                color: theme.colorScheme.onSurface,
-              ),
-            ),
-            centerTitle: true,
-            actions: [
-              Padding(
-                padding: EdgeInsets.only(right: size.width * 0.04),
-                child: Center(
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 10, vertical: 4),
-                    decoration: BoxDecoration(
-                      color: primary.withOpacity(0.12),
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: Text(
-                      '${history.length} kuis',
-                      style: TextStyle(
-                        fontFamily: 'Poppins',
-                        fontSize: size.width * 0.033,
-                        fontWeight: FontWeight.w600,
-                        color: primary,
+          body: SafeArea(
+            child: history.isEmpty
+                ? Column(
+                    children: [
+                      // ── Header (tanpa back button, karena tab) ──────────────
+                      SizedBox(height: size.height * 0.02),
+                      Padding(
+                        padding: EdgeInsets.symmetric(
+                            horizontal: size.width * 0.05),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              'Riwayat Kuis',
+                              style: TextStyle(
+                                fontFamily: 'Poppins',
+                                fontWeight: FontWeight.w800,
+                                fontSize: size.width * 0.065,
+                                color: theme.colorScheme.onSurface,
+                              ),
+                            ),
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 10, vertical: 4),
+                              decoration: BoxDecoration(
+                                color: primary.withValues(alpha: 0.12),
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              child: Text(
+                                '0 kuis',
+                                style: TextStyle(
+                                  fontFamily: 'Poppins',
+                                  fontSize: size.width * 0.033,
+                                  fontWeight: FontWeight.w600,
+                                  color: primary,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Expanded(child: _EmptyState(primary: primary)),
+                    ],
+                  )
+                : Column(
+                  children: [
+                    // ── Header (tanpa back button, karena tab) ──────────────
+                    SizedBox(height: size.height * 0.02),
+                    Padding(
+                      padding: EdgeInsets.symmetric(
+                          horizontal: size.width * 0.05),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'Riwayat Kuis',
+                            style: TextStyle(
+                              fontFamily: 'Poppins',
+                              fontWeight: FontWeight.w800,
+                              fontSize: size.width * 0.065,
+                              color: theme.colorScheme.onSurface,
+                            ),
+                          ),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 10, vertical: 4),
+                            decoration: BoxDecoration(
+                              color: primary.withValues(alpha: 0.12),
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: Text(
+                              '${history.length} kuis',
+                              style: TextStyle(
+                                fontFamily: 'Poppins',
+                                fontSize: size.width * 0.033,
+                                fontWeight: FontWeight.w600,
+                                color: primary,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-          body: history.isEmpty
-              ? _EmptyState(primary: primary)
-              : Column(
-                  children: [
                     // ── Ringkasan statistik ─────────────────────────────────
                     _SummaryHeader(history: history, primary: primary),
 
-                    // ── Judul tabel ─────────────────────────────────────────
+                    // ── Judul ───────────────────────────────────────────────
                     Padding(
                       padding: EdgeInsets.symmetric(
                         horizontal: size.width * 0.05,
@@ -114,7 +154,7 @@ class HistoryScreen extends StatelessWidget {
                       ),
                     ),
 
-                    // ── Tabel riwayat scrollable ────────────────────────────
+                    // ── Daftar riwayat ──────────────────────────────────────
                     Expanded(
                       child: Padding(
                         padding: EdgeInsets.symmetric(
@@ -125,7 +165,7 @@ class HistoryScreen extends StatelessWidget {
                             borderRadius: BorderRadius.circular(18),
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.black.withOpacity(0.06),
+                                color: Colors.black.withValues(alpha: 0.06),
                                 blurRadius: 12,
                                 offset: const Offset(0, 4),
                               ),
@@ -135,14 +175,12 @@ class HistoryScreen extends StatelessWidget {
                             borderRadius: BorderRadius.circular(18),
                             child: Column(
                               children: [
-                                // Header tabel
-                                _TableHeader(),
-                                // Isi tabel
+                                const _TableHeader(),
                                 Expanded(
                                   child: ListView.separated(
                                     padding: EdgeInsets.zero,
                                     itemCount: history.length,
-                                    separatorBuilder: (_, __) => Divider(
+                                    separatorBuilder: (_, _) => Divider(
                                       height: 1,
                                       color: Colors.grey.shade100,
                                     ),
@@ -154,7 +192,14 @@ class HistoryScreen extends StatelessWidget {
                                         scoreColor: _scoreColor(r.score),
                                         dateString:
                                             _formatDateTime(r.finishedAt),
-                                        subjectIcon: _subjectIcon(r.subject),
+                                        subjectIcon:
+                                            subjectIcons[r.subject] ??
+                                                Icons.book_rounded,
+                                        subjectColor:
+                                            subjectColors[r.subject] ??
+                                                Theme.of(context)
+                                                    .colorScheme
+                                                    .primary,
                                       );
                                     },
                                   ),
@@ -168,6 +213,7 @@ class HistoryScreen extends StatelessWidget {
                     SizedBox(height: size.height * 0.025),
                   ],
                 ),
+          ),  // SafeArea
         );
       },
     );
@@ -188,7 +234,8 @@ class _SummaryHeader extends StatelessWidget {
         : (history.map((r) => r.score).reduce((a, b) => a + b) /
                 history.length)
             .round();
-    final best = history.map((r) => r.score).reduce((a, b) => a > b ? a : b);
+    final best =
+        history.map((r) => r.score).reduce((a, b) => a > b ? a : b);
 
     return Padding(
       padding: EdgeInsets.symmetric(
@@ -254,7 +301,7 @@ class _MiniStatCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(14),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 8,
             offset: const Offset(0, 3),
           ),
@@ -289,6 +336,8 @@ class _MiniStatCard extends StatelessWidget {
 
 // ── Header kolom tabel ─────────────────────────────────────────────────────────
 class _TableHeader extends StatelessWidget {
+  const _TableHeader();
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -303,38 +352,38 @@ class _TableHeader extends StatelessWidget {
       child: Row(
         children: [
           SizedBox(
-            width: size.width * 0.06,
+            width: size.width * 0.055,
             child: Text(
               '#',
               style: TextStyle(
                 fontFamily: 'Poppins',
                 fontWeight: FontWeight.w700,
-                fontSize: size.width * 0.03,
+                fontSize: size.width * 0.028,
                 color: Colors.white,
               ),
             ),
           ),
           Expanded(
-            flex: 3,
+            flex: 4,
             child: Text(
-              'Nama / Mata Kuliah',
+              'Nama / NIM / Mata Kuliah',
               style: TextStyle(
                 fontFamily: 'Poppins',
                 fontWeight: FontWeight.w700,
-                fontSize: size.width * 0.03,
+                fontSize: size.width * 0.028,
                 color: Colors.white,
               ),
             ),
           ),
           SizedBox(
-            width: size.width * 0.16,
+            width: size.width * 0.15,
             child: Text(
               'Skor',
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontFamily: 'Poppins',
                 fontWeight: FontWeight.w700,
-                fontSize: size.width * 0.03,
+                fontSize: size.width * 0.028,
                 color: Colors.white,
               ),
             ),
@@ -347,7 +396,7 @@ class _TableHeader extends StatelessWidget {
               style: TextStyle(
                 fontFamily: 'Poppins',
                 fontWeight: FontWeight.w700,
-                fontSize: size.width * 0.03,
+                fontSize: size.width * 0.028,
                 color: Colors.white,
               ),
             ),
@@ -358,13 +407,14 @@ class _TableHeader extends StatelessWidget {
   }
 }
 
-// ── Satu baris riwayat di tabel ────────────────────────────────────────────────
+// ── Satu baris riwayat ─────────────────────────────────────────────────────────
 class _HistoryRow extends StatelessWidget {
   final QuizResult result;
   final int index;
   final Color scoreColor;
   final String dateString;
-  final String subjectIcon;
+  final IconData subjectIcon;
+  final Color subjectColor;
 
   const _HistoryRow({
     required this.result,
@@ -372,6 +422,7 @@ class _HistoryRow extends StatelessWidget {
     required this.scoreColor,
     required this.dateString,
     required this.subjectIcon,
+    required this.subjectColor,
   });
 
   @override
@@ -390,49 +441,84 @@ class _HistoryRow extends StatelessWidget {
         children: [
           // Nomor urut
           SizedBox(
-            width: size.width * 0.06,
+            width: size.width * 0.055,
             child: Text(
               '${index + 1}',
               style: TextStyle(
                 fontFamily: 'Poppins',
-                fontSize: size.width * 0.032,
+                fontSize: size.width * 0.03,
                 fontWeight: FontWeight.w600,
                 color: theme.colorScheme.onSurfaceVariant,
               ),
             ),
           ),
-          // Nama & mata kuliah
+          // Nama, NIM & mata kuliah
           Expanded(
-            flex: 3,
+            flex: 4,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                // Nama
                 Text(
                   result.userName,
                   style: TextStyle(
                     fontFamily: 'Poppins',
-                    fontSize: size.width * 0.033,
-                    fontWeight: FontWeight.w600,
+                    fontSize: size.width * 0.032,
+                    fontWeight: FontWeight.w700,
                     color: theme.colorScheme.onSurface,
                   ),
                   overflow: TextOverflow.ellipsis,
                 ),
-                SizedBox(height: size.height * 0.002),
-                Text(
-                  '$subjectIcon ${result.subject}',
-                  style: TextStyle(
-                    fontFamily: 'Poppins',
-                    fontSize: size.width * 0.027,
-                    color: theme.colorScheme.onSurfaceVariant,
-                  ),
-                  overflow: TextOverflow.ellipsis,
+                // NIM
+                Row(
+                  children: [
+                    Icon(
+                      Icons.badge_outlined,
+                      size: size.width * 0.028,
+                      color: theme.colorScheme.onSurfaceVariant,
+                    ),
+                    const SizedBox(width: 3),
+                    Text(
+                      result.nim,
+                      style: TextStyle(
+                        fontFamily: 'Poppins',
+                        fontSize: size.width * 0.027,
+                        color: theme.colorScheme.onSurfaceVariant,
+                        fontWeight: FontWeight.w500,
+                        letterSpacing: 0.5,
+                      ),
+                    ),
+                  ],
+                ),
+                // Mata kuliah dengan ikon
+                Row(
+                  children: [
+                    Icon(
+                      subjectIcon,
+                      size: size.width * 0.028,
+                      color: subjectColor,
+                    ),
+                    const SizedBox(width: 3),
+                    Flexible(
+                      child: Text(
+                        result.subject,
+                        style: TextStyle(
+                          fontFamily: 'Poppins',
+                          fontSize: size.width * 0.025,
+                          color: subjectColor,
+                          fontWeight: FontWeight.w600,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
           ),
           // Badge skor
           SizedBox(
-            width: size.width * 0.16,
+            width: size.width * 0.15,
             child: Center(
               child: Container(
                 padding: EdgeInsets.symmetric(
@@ -440,9 +526,9 @@ class _HistoryRow extends StatelessWidget {
                   vertical: size.height * 0.005,
                 ),
                 decoration: BoxDecoration(
-                  color: scoreColor.withOpacity(0.12),
+                  color: scoreColor.withValues(alpha: 0.12),
                   borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: scoreColor.withOpacity(0.4)),
+                  border: Border.all(color: scoreColor.withValues(alpha: 0.4)),
                 ),
                 child: Text(
                   '${result.score}',
@@ -465,7 +551,7 @@ class _HistoryRow extends StatelessWidget {
               textAlign: TextAlign.end,
               style: TextStyle(
                 fontFamily: 'Poppins',
-                fontSize: size.width * 0.025,
+                fontSize: size.width * 0.024,
                 color: theme.colorScheme.onSurfaceVariant,
                 height: 1.4,
               ),
@@ -477,7 +563,7 @@ class _HistoryRow extends StatelessWidget {
   }
 }
 
-// ── State kosong saat tidak ada riwayat ───────────────────────────────────────
+// ── State kosong ───────────────────────────────────────────────────────────────
 class _EmptyState extends StatelessWidget {
   final Color primary;
   const _EmptyState({required this.primary});
@@ -492,7 +578,7 @@ class _EmptyState extends StatelessWidget {
           Icon(
             Icons.history_edu_rounded,
             size: size.width * 0.2,
-            color: primary.withOpacity(0.3),
+            color: primary.withValues(alpha: 0.3),
           ),
           SizedBox(height: size.height * 0.02),
           Text(
@@ -513,7 +599,7 @@ class _EmptyState extends StatelessWidget {
               color: Theme.of(context)
                   .colorScheme
                   .onSurfaceVariant
-                  .withOpacity(0.6),
+                  .withValues(alpha: 0.6),
             ),
           ),
         ],

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'providers/quiz_provider.dart';
-import 'screens/home_screen.dart';
+import 'screens/splash_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -56,7 +56,8 @@ class _MyAppState extends State<MyApp> {
                 ),
               ),
             ),
-            home: const HomeScreen(),
+            // SplashScreen sebagai halaman pertama
+            home: const SplashScreen(),
           );
         },
       ),

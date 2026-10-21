@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import '../data/quiz_data.dart';
 
 /// Kartu pemilihan mata kuliah reusable di HomeScreen
+/// Menggunakan IconData (bukan emoji) untuk ikon mata kuliah
 class SubjectCard extends StatelessWidget {
   final String subject;
-  final String emoji;
+  final IconData iconData;
   final String description;
   final bool isSelected;
   final VoidCallback onTap;
@@ -11,7 +13,7 @@ class SubjectCard extends StatelessWidget {
   const SubjectCard({
     super.key,
     required this.subject,
-    required this.emoji,
+    required this.iconData,
     required this.description,
     required this.isSelected,
     required this.onTap,
@@ -21,19 +23,14 @@ class SubjectCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final theme = Theme.of(context);
+    final accentColor = subjectColors[subject] ?? theme.colorScheme.primary;
 
-    final bgColor = isSelected
-        ? theme.colorScheme.primary
-        : theme.colorScheme.surface;
-    final textColor = isSelected
-        ? Colors.white
-        : theme.colorScheme.onSurface;
-    final subTextColor = isSelected
-        ? Colors.white70
-        : theme.colorScheme.onSurfaceVariant;
-    final borderColor = isSelected
-        ? theme.colorScheme.primary
-        : theme.colorScheme.outline.withOpacity(0.3);
+    final bgColor = isSelected ? accentColor : theme.colorScheme.surface;
+    final textColor = isSelected ? Colors.white : theme.colorScheme.onSurface;
+    final subTextColor =
+        isSelected ? Colors.white70 : theme.colorScheme.onSurfaceVariant;
+    final borderColor =
+        isSelected ? accentColor : theme.colorScheme.outline.withValues(alpha: 0.3);
 
     return GestureDetector(
       onTap: onTap,
@@ -49,14 +46,14 @@ class SubjectCard extends StatelessWidget {
           boxShadow: isSelected
               ? [
                   BoxShadow(
-                    color: theme.colorScheme.primary.withOpacity(0.35),
+                    color: accentColor.withValues(alpha: 0.35),
                     blurRadius: 12,
                     offset: const Offset(0, 4),
                   )
                 ]
               : [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.06),
+                    color: Colors.black.withValues(alpha: 0.06),
                     blurRadius: 8,
                     offset: const Offset(0, 2),
                   )
@@ -64,20 +61,21 @@ class SubjectCard extends StatelessWidget {
         ),
         child: Row(
           children: [
-            // Emoji ikon mata kuliah
+            // Ikon mata kuliah (Material Icon)
             Container(
               width: size.width * 0.14,
               height: size.width * 0.14,
               decoration: BoxDecoration(
                 color: isSelected
-                    ? Colors.white.withOpacity(0.2)
-                    : theme.colorScheme.primaryContainer,
+                    ? Colors.white.withValues(alpha: 0.2)
+                    : accentColor.withValues(alpha: 0.12),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Center(
-                child: Text(
-                  emoji,
-                  style: TextStyle(fontSize: size.width * 0.07),
+                child: Icon(
+                  iconData,
+                  color: isSelected ? Colors.white : accentColor,
+                  size: size.width * 0.07,
                 ),
               ),
             ),
@@ -121,7 +119,7 @@ class SubjectCard extends StatelessWidget {
                   : Icon(
                       Icons.radio_button_unchecked_rounded,
                       key: const ValueKey('uncheck'),
-                      color: theme.colorScheme.outline.withOpacity(0.5),
+                      color: theme.colorScheme.outline.withValues(alpha: 0.5),
                       size: size.width * 0.065,
                     ),
             ),
