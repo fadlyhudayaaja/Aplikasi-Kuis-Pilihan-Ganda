@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import '../data/quiz_data.dart';
 import '../providers/quiz_provider.dart';
+import '../utils/responsive.dart';
 import '../widgets/custom_button.dart';
 import '../widgets/subject_card.dart';
+import '../widgets/theme_toggle_button.dart';
 import 'quiz_screen.dart';
 
-/// Halaman Awal – input nama, NIM, pilih mata kuliah, mulai kuis atau lihat riwayat
+/// Halaman Awal – input nama, NIM, pilih mata kuliah, mulai kuis
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -88,278 +90,284 @@ class _HomeScreenState extends State<HomeScreen>
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
     final theme = Theme.of(context);
     final primaryColor = theme.colorScheme.primary;
+    final cw = Responsive.cw(context);
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF4F3FF),
+      backgroundColor: theme.scaffoldBackgroundColor,
       body: SafeArea(
-        child: SingleChildScrollView(
-          padding: EdgeInsets.symmetric(horizontal: size.width * 0.06),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(height: size.height * 0.04),
+        child: Responsive.constrain(
+          context: context,
+          child: SingleChildScrollView(
+            padding: EdgeInsets.symmetric(horizontal: cw * 0.06),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.04),
 
-                // ── Header ──────────────────────────────────────────────────
-                SlideTransition(
-                  position: _headerSlide,
-                  child: FadeTransition(
-                    opacity: _headerFade,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            // Logo aplikasi di header
-                            Container(
-                              width: 48,
-                              height: 48,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(14),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: primaryColor.withValues(alpha: 0.25),
-                                    blurRadius: 10,
-                                    offset: const Offset(0, 4),
-                                  ),
-                                ],
-                              ),
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(14),
-                                child: Image.asset(
-                                  'assets/images/app_logo.png',
-                                  fit: BoxFit.cover,
-                                  errorBuilder: (_, _, _) => Container(
-                                    padding: const EdgeInsets.all(10),
-                                    decoration: BoxDecoration(
-                                      color: primaryColor,
-                                      borderRadius: BorderRadius.circular(14),
-                                    ),
-                                    child: const Icon(
-                                      Icons.quiz_rounded,
-                                      color: Colors.white,
-                                      size: 26,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            const SizedBox(width: 12),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'QuizMate',
-                                  style: TextStyle(
-                                    fontSize: size.width * 0.065,
-                                    fontWeight: FontWeight.w800,
-                                    color: primaryColor,
-                                    fontFamily: 'Poppins',
-                                    letterSpacing: -0.5,
-                                  ),
-                                ),
-                                Text(
-                                  'Kuis Pilihan Ganda – Fasilkom-TI USU',
-                                  style: TextStyle(
-                                    fontSize: size.width * 0.03,
-                                    color: theme.colorScheme.onSurfaceVariant,
-                                    fontFamily: 'Poppins',
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: size.height * 0.025),
-
-                        // Banner card selamat datang
-                        Container(
-                          width: double.infinity,
-                          padding: EdgeInsets.all(size.width * 0.05),
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              colors: [
-                                primaryColor,
-                                const Color(0xFF8B83FF),
-                              ],
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                            ),
-                            borderRadius: BorderRadius.circular(20),
-                            boxShadow: [
-                              BoxShadow(
-                                color: primaryColor.withValues(alpha: 0.3),
-                                blurRadius: 20,
-                                offset: const Offset(0, 8),
-                              ),
-                            ],
-                          ),
-                          child: Row(
+                  // ── Header ──────────────────────────────────────────────────
+                  SlideTransition(
+                    position: _headerSlide,
+                    child: FadeTransition(
+                      opacity: _headerFade,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
                             children: [
+                              // Logo aplikasi di header
+                              Container(
+                                width: 48,
+                                height: 48,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(14),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: primaryColor.withValues(alpha: 0.25),
+                                      blurRadius: 10,
+                                      offset: const Offset(0, 4),
+                                    ),
+                                  ],
+                                ),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(14),
+                                  child: Image.asset(
+                                    'assets/images/app_logo.png',
+                                    fit: BoxFit.cover,
+                                    errorBuilder: (_, _, _) => Container(
+                                      padding: const EdgeInsets.all(10),
+                                      decoration: BoxDecoration(
+                                        color: primaryColor,
+                                        borderRadius: BorderRadius.circular(14),
+                                      ),
+                                      child: const Icon(
+                                        Icons.quiz_rounded,
+                                        color: Colors.white,
+                                        size: 26,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 12),
                               Expanded(
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      'Selamat Datang! 👋',
+                                      'QuizMate',
                                       style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: size.width * 0.048,
-                                        fontWeight: FontWeight.w700,
+                                        fontSize: cw * 0.065,
+                                        fontWeight: FontWeight.w800,
+                                        color: primaryColor,
                                         fontFamily: 'Poppins',
+                                        letterSpacing: -0.5,
                                       ),
                                     ),
-                                    SizedBox(height: size.height * 0.006),
                                     Text(
-                                      'Isi identitasmu & pilih mata kuliah\nuntuk memulai kuis.',
+                                      'Kuis Pilihan Ganda – Fasilkom-TI USU',
                                       style: TextStyle(
-                                        color: Colors.white.withValues(alpha: 0.85),
-                                        fontSize: size.width * 0.033,
+                                        fontSize: cw * 0.03,
+                                        color: theme.colorScheme.onSurfaceVariant,
                                         fontFamily: 'Poppins',
-                                        height: 1.5,
                                       ),
                                     ),
                                   ],
                                 ),
                               ),
-                              Icon(
-                                Icons.school_rounded,
-                                color: Colors.white.withValues(alpha: 0.4),
-                                size: size.width * 0.18,
-                              ),
+                              // Theme toggle (hanya di phone, di tablet ada di sidebar)
+                              if (!Responsive.isWide(context))
+                                const ThemeToggleButton(),
                             ],
                           ),
+                          SizedBox(height: MediaQuery.of(context).size.height * 0.025),
+
+                          // Banner card selamat datang
+                          Container(
+                            width: double.infinity,
+                            padding: EdgeInsets.all(cw * 0.05),
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                colors: [
+                                  primaryColor,
+                                  const Color(0xFF8B83FF),
+                                ],
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                              ),
+                              borderRadius: BorderRadius.circular(20),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: primaryColor.withValues(alpha: 0.3),
+                                  blurRadius: 20,
+                                  offset: const Offset(0, 8),
+                                ),
+                              ],
+                            ),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        'Selamat Datang! 👋',
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: cw * 0.048,
+                                          fontWeight: FontWeight.w700,
+                                          fontFamily: 'Poppins',
+                                        ),
+                                      ),
+                                      SizedBox(height: MediaQuery.of(context).size.height * 0.006),
+                                      Text(
+                                        'Isi identitasmu & pilih mata kuliah\nuntuk memulai kuis.',
+                                        style: TextStyle(
+                                          color: Colors.white.withValues(alpha: 0.85),
+                                          fontSize: cw * 0.033,
+                                          fontFamily: 'Poppins',
+                                          height: 1.5,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Icon(
+                                  Icons.school_rounded,
+                                  color: Colors.white.withValues(alpha: 0.4),
+                                  size: cw * 0.18,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.035),
+
+                  // ── Identitas Peserta ────────────────────────────────────────
+                  _SectionLabel(label: 'Identitas Peserta', cw: cw),
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.012),
+
+                  // Input Nama
+                  TextFormField(
+                    controller: _nameController,
+                    textCapitalization: TextCapitalization.words,
+                    style: TextStyle(
+                      fontFamily: 'Poppins',
+                      fontSize: cw * 0.04,
+                    ),
+                    decoration: InputDecoration(
+                      hintText: 'Nama lengkap...',
+                      hintStyle: TextStyle(
+                        fontFamily: 'Poppins',
+                        fontSize: cw * 0.038,
+                        color: theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.6),
+                      ),
+                      prefixIcon: Icon(
+                        Icons.person_outline_rounded,
+                        color: primaryColor,
+                      ),
+                      fillColor: theme.colorScheme.surface,
+                      labelText: 'Nama',
+                      labelStyle: TextStyle(
+                        fontFamily: 'Poppins',
+                        color: primaryColor,
+                        fontSize: cw * 0.036,
+                      ),
+                    ),
+                    validator: (value) {
+                      if (value == null || value.trim().isEmpty) {
+                        return 'Nama tidak boleh kosong';
+                      }
+                      if (value.trim().length < 3) {
+                        return 'Nama minimal 3 karakter';
+                      }
+                      return null;
+                    },
+                  ),
+
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.016),
+
+                  // Input NIM
+                  TextFormField(
+                    controller: _nimController,
+                    keyboardType: TextInputType.number,
+                    style: TextStyle(
+                      fontFamily: 'Poppins',
+                      fontSize: cw * 0.04,
+                      letterSpacing: 1.2,
+                    ),
+                    decoration: InputDecoration(
+                      hintText: 'Nomor Induk Mahasiswa...',
+                      hintStyle: TextStyle(
+                        fontFamily: 'Poppins',
+                        fontSize: cw * 0.038,
+                        letterSpacing: 0,
+                        color: theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.6),
+                      ),
+                      prefixIcon: Icon(
+                        Icons.badge_outlined,
+                        color: primaryColor,
+                      ),
+                      fillColor: theme.colorScheme.surface,
+                      labelText: 'NIM',
+                      labelStyle: TextStyle(
+                        fontFamily: 'Poppins',
+                        color: primaryColor,
+                        fontSize: cw * 0.036,
+                      ),
+                    ),
+                    validator: (value) {
+                      if (value == null || value.trim().isEmpty) {
+                        return 'NIM tidak boleh kosong';
+                      }
+                      if (value.trim().length < 6) {
+                        return 'NIM minimal 6 digit';
+                      }
+                      return null;
+                    },
+                  ),
+
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.03),
+
+                  // ── Pilihan Mata Kuliah ──────────────────────────────────────
+                  _SectionLabel(label: 'Pilih Mata Kuliah', cw: cw),
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.012),
+                  ...subjects.map((subject) {
+                    return SubjectCard(
+                      subject: subject,
+                      iconData: subjectIcons[subject] ?? Icons.book_rounded,
+                      description: subjectDescriptions[subject] ?? '',
+                      isSelected: _selectedSubject == subject,
+                      onTap: () => setState(() => _selectedSubject = subject),
+                    );
+                  }),
+
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.035),
+
+                  // ── Tombol Mulai Kuis ────────────────────────────────────────
+                  Center(
+                    child: Column(
+                      children: [
+                        CustomButton(
+                          label: 'Mulai Kuis',
+                          onPressed: _startQuiz,
+                          icon: Icons.play_arrow_rounded,
+                          backgroundColor: primaryColor,
                         ),
                       ],
                     ),
                   ),
-                ),
 
-                SizedBox(height: size.height * 0.035),
-
-                // ── Identitas Peserta ────────────────────────────────────────
-                const _SectionLabel(label: 'Identitas Peserta'),
-                SizedBox(height: size.height * 0.012),
-
-                // Input Nama
-                TextFormField(
-                  controller: _nameController,
-                  textCapitalization: TextCapitalization.words,
-                  style: TextStyle(
-                    fontFamily: 'Poppins',
-                    fontSize: size.width * 0.04,
-                  ),
-                  decoration: InputDecoration(
-                    hintText: 'Nama lengkap...',
-                    hintStyle: TextStyle(
-                      fontFamily: 'Poppins',
-                      fontSize: size.width * 0.038,
-                      color:
-                          theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.6),
-                    ),
-                    prefixIcon: Icon(
-                      Icons.person_outline_rounded,
-                      color: primaryColor,
-                    ),
-                    fillColor: Colors.white,
-                    labelText: 'Nama',
-                    labelStyle: TextStyle(
-                      fontFamily: 'Poppins',
-                      color: primaryColor,
-                      fontSize: size.width * 0.036,
-                    ),
-                  ),
-                  validator: (value) {
-                    if (value == null || value.trim().isEmpty) {
-                      return 'Nama tidak boleh kosong';
-                    }
-                    if (value.trim().length < 3) {
-                      return 'Nama minimal 3 karakter';
-                    }
-                    return null;
-                  },
-                ),
-
-                SizedBox(height: size.height * 0.016),
-
-                // Input NIM
-                TextFormField(
-                  controller: _nimController,
-                  keyboardType: TextInputType.number,
-                  style: TextStyle(
-                    fontFamily: 'Poppins',
-                    fontSize: size.width * 0.04,
-                    letterSpacing: 1.2,
-                  ),
-                  decoration: InputDecoration(
-                    hintText: 'Nomor Induk Mahasiswa...',
-                    hintStyle: TextStyle(
-                      fontFamily: 'Poppins',
-                      fontSize: size.width * 0.038,
-                      letterSpacing: 0,
-                      color:
-                          theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.6),
-                    ),
-                    prefixIcon: Icon(
-                      Icons.badge_outlined,
-                      color: primaryColor,
-                    ),
-                    fillColor: Colors.white,
-                    labelText: 'NIM',
-                    labelStyle: TextStyle(
-                      fontFamily: 'Poppins',
-                      color: primaryColor,
-                      fontSize: size.width * 0.036,
-                    ),
-                  ),
-                  validator: (value) {
-                    if (value == null || value.trim().isEmpty) {
-                      return 'NIM tidak boleh kosong';
-                    }
-                    if (value.trim().length < 6) {
-                      return 'NIM minimal 6 digit';
-                    }
-                    return null;
-                  },
-                ),
-
-                SizedBox(height: size.height * 0.03),
-
-                // ── Pilihan Mata Kuliah ──────────────────────────────────────
-                const _SectionLabel(label: 'Pilih Mata Kuliah'),
-                SizedBox(height: size.height * 0.012),
-                ...subjects.map((subject) {
-                  return SubjectCard(
-                    subject: subject,
-                    iconData: subjectIcons[subject] ?? Icons.book_rounded,
-                    description: subjectDescriptions[subject] ?? '',
-                    isSelected: _selectedSubject == subject,
-                    onTap: () => setState(() => _selectedSubject = subject),
-                  );
-                }),
-
-                SizedBox(height: size.height * 0.035),
-
-                // ── Tombol Mulai Kuis ────────────────────────────────────────
-                Center(
-                  child: Column(
-                    children: [
-                      CustomButton(
-                        label: 'Mulai Kuis',
-                        onPressed: _startQuiz,
-                        icon: Icons.play_arrow_rounded,
-                        backgroundColor: primaryColor,
-                      ),
-                    ],
-                  ),
-                ),
-
-                SizedBox(height: size.height * 0.04),
-              ],
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.04),
+                ],
+              ),
             ),
           ),
         ),
@@ -371,15 +379,15 @@ class _HomeScreenState extends State<HomeScreen>
 // ── Label section heading ──────────────────────────────────────────────────────
 class _SectionLabel extends StatelessWidget {
   final String label;
-  const _SectionLabel({required this.label});
+  final double cw;
+  const _SectionLabel({required this.label, required this.cw});
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
     return Text(
       label,
       style: TextStyle(
-        fontSize: size.width * 0.042,
+        fontSize: cw * 0.042,
         fontWeight: FontWeight.w700,
         color: Theme.of(context).colorScheme.onSurface,
         fontFamily: 'Poppins',

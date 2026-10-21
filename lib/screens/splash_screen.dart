@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../utils/responsive.dart';
 import 'main_screen.dart';
 
 /// Halaman splash animasi saat pertama kali membuka aplikasi
@@ -33,7 +34,6 @@ class _SplashScreenState extends State<SplashScreen>
   void initState() {
     super.initState();
 
-    // ── Logo animation ─────────────────────────────────────────────────
     _logoCtrl = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 900),
@@ -43,7 +43,6 @@ class _SplashScreenState extends State<SplashScreen>
     );
     _logoFade = CurvedAnimation(parent: _logoCtrl, curve: Curves.easeOut);
 
-    // ── App name animation ─────────────────────────────────────────────
     _textCtrl = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 600),
@@ -54,15 +53,12 @@ class _SplashScreenState extends State<SplashScreen>
     ).animate(CurvedAnimation(parent: _textCtrl, curve: Curves.easeOut));
     _textFade = CurvedAnimation(parent: _textCtrl, curve: Curves.easeOut);
 
-    // ── Tagline animation ──────────────────────────────────────────────
     _taglineCtrl = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 500),
     );
-    _taglineFade =
-        CurvedAnimation(parent: _taglineCtrl, curve: Curves.easeOut);
+    _taglineFade = CurvedAnimation(parent: _taglineCtrl, curve: Curves.easeOut);
 
-    // ── Exit fade-out animation ────────────────────────────────────────
     _exitCtrl = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 500),
@@ -75,21 +71,12 @@ class _SplashScreenState extends State<SplashScreen>
   }
 
   Future<void> _runSequence() async {
-    // 1. Logo muncul
     await _logoCtrl.forward();
-
-    // 2. Nama aplikasi muncul
     await Future.delayed(const Duration(milliseconds: 100));
     await _textCtrl.forward();
-
-    // 3. Tagline muncul
     await Future.delayed(const Duration(milliseconds: 100));
     await _taglineCtrl.forward();
-
-    // 4. Tahan sebentar
     await Future.delayed(const Duration(milliseconds: 1400));
-
-    // 5. Fade out dan navigasi
     await _exitCtrl.forward();
 
     if (mounted) {
@@ -114,6 +101,7 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
+    final cw = Responsive.cw(context);
 
     return AnimatedBuilder(
       animation: _exitFade,
@@ -136,13 +124,13 @@ class _SplashScreenState extends State<SplashScreen>
           ),
           child: Stack(
             children: [
-              // ── Dekorasi lingkaran latar belakang ─────────────────────
+              // ── Dekorasi lingkaran latar belakang (capped) ────────────
               Positioned(
-                top: -size.width * 0.25,
-                right: -size.width * 0.2,
+                top: -cw * 0.25,
+                right: -cw * 0.2,
                 child: Container(
-                  width: size.width * 0.7,
-                  height: size.width * 0.7,
+                  width: cw * 0.7,
+                  height: cw * 0.7,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     color: Colors.white.withValues(alpha: 0.06),
@@ -150,11 +138,11 @@ class _SplashScreenState extends State<SplashScreen>
                 ),
               ),
               Positioned(
-                bottom: -size.width * 0.3,
-                left: -size.width * 0.2,
+                bottom: -cw * 0.3,
+                left: -cw * 0.2,
                 child: Container(
-                  width: size.width * 0.8,
-                  height: size.width * 0.8,
+                  width: cw * 0.8,
+                  height: cw * 0.8,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     color: Colors.white.withValues(alpha: 0.06),
@@ -164,78 +152,81 @@ class _SplashScreenState extends State<SplashScreen>
 
               // ── Konten tengah ─────────────────────────────────────────
               Center(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    // Logo animasi
-                    ScaleTransition(
-                      scale: _logoScale,
-                      child: FadeTransition(
-                        opacity: _logoFade,
-                        child: _LogoWidget(size: size),
+                child: Responsive.constrain(
+                  context: context,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      // Logo animasi
+                      ScaleTransition(
+                        scale: _logoScale,
+                        child: FadeTransition(
+                          opacity: _logoFade,
+                          child: _LogoWidget(cw: cw),
+                        ),
                       ),
-                    ),
 
-                    SizedBox(height: size.height * 0.04),
+                      SizedBox(height: size.height * 0.04),
 
-                    // Nama aplikasi
-                    SlideTransition(
-                      position: _textSlide,
-                      child: FadeTransition(
-                        opacity: _textFade,
-                        child: Text(
-                          'QuizMate',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: size.width * 0.1,
-                            fontWeight: FontWeight.w800,
-                            fontFamily: 'Poppins',
-                            letterSpacing: -1,
+                      // Nama aplikasi
+                      SlideTransition(
+                        position: _textSlide,
+                        child: FadeTransition(
+                          opacity: _textFade,
+                          child: Text(
+                            'QuizMate',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: cw * 0.1,
+                              fontWeight: FontWeight.w800,
+                              fontFamily: 'Poppins',
+                              letterSpacing: -1,
+                            ),
                           ),
                         ),
                       ),
-                    ),
 
-                    SizedBox(height: size.height * 0.008),
+                      SizedBox(height: size.height * 0.008),
 
-                    // Tagline
-                    FadeTransition(
-                      opacity: _taglineFade,
-                      child: Column(
-                        children: [
-                          Text(
-                            'Kuis Pilihan Ganda',
-                            style: TextStyle(
-                              color: Colors.white.withValues(alpha: 0.85),
-                              fontSize: size.width * 0.042,
-                              fontFamily: 'Poppins',
-                              fontWeight: FontWeight.w500,
-                              letterSpacing: 0.5,
-                            ),
-                          ),
-                          SizedBox(height: size.height * 0.006),
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 14, vertical: 5),
-                            decoration: BoxDecoration(
-                              color: Colors.white.withValues(alpha: 0.15),
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            child: Text(
-                              'IKLC Fasilkom-TI USU',
+                      // Tagline
+                      FadeTransition(
+                        opacity: _taglineFade,
+                        child: Column(
+                          children: [
+                            Text(
+                              'Kuis Pilihan Ganda',
                               style: TextStyle(
-                                color: Colors.white.withValues(alpha: 0.9),
-                                fontSize: size.width * 0.032,
+                                color: Colors.white.withValues(alpha: 0.85),
+                                fontSize: cw * 0.042,
                                 fontFamily: 'Poppins',
                                 fontWeight: FontWeight.w500,
-                                letterSpacing: 0.3,
+                                letterSpacing: 0.5,
                               ),
                             ),
-                          ),
-                        ],
+                            SizedBox(height: size.height * 0.006),
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 14, vertical: 5),
+                              decoration: BoxDecoration(
+                                color: Colors.white.withValues(alpha: 0.15),
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              child: Text(
+                                'IKLC Fasilkom-TI USU',
+                                style: TextStyle(
+                                  color: Colors.white.withValues(alpha: 0.9),
+                                  fontSize: cw * 0.032,
+                                  fontFamily: 'Poppins',
+                                  fontWeight: FontWeight.w500,
+                                  letterSpacing: 0.3,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
 
@@ -259,18 +250,18 @@ class _SplashScreenState extends State<SplashScreen>
 
 // ── Widget Logo utama dengan gambar app_logo.png ─────────────────────────────
 class _LogoWidget extends StatelessWidget {
-  final Size size;
-  const _LogoWidget({required this.size});
+  final double cw;
+  const _LogoWidget({required this.cw});
 
   @override
   Widget build(BuildContext context) {
-    final logoSize = size.width * 0.38;
+    final logoSize = cw * 0.38;
     return Container(
       width: logoSize,
       height: logoSize,
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(size.width * 0.08),
+        borderRadius: BorderRadius.circular(cw * 0.08),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.3),
@@ -285,7 +276,7 @@ class _LogoWidget extends StatelessWidget {
         ],
       ),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(size.width * 0.08),
+        borderRadius: BorderRadius.circular(cw * 0.08),
         child: Image.asset(
           'assets/images/app_logo.png',
           width: logoSize,
@@ -296,7 +287,7 @@ class _LogoWidget extends StatelessWidget {
             child: Icon(
               Icons.quiz_rounded,
               color: const Color(0xFF6C63FF),
-              size: size.width * 0.16,
+              size: cw * 0.16,
             ),
           ),
         ),

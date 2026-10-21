@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../data/quiz_data.dart';
+import '../utils/responsive.dart';
 
 /// Kartu pemilihan mata kuliah reusable di HomeScreen
 /// Menggunakan IconData (bukan emoji) untuk ikon mata kuliah
@@ -23,14 +24,17 @@ class SubjectCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final theme = Theme.of(context);
+    final cw = Responsive.cw(context);
     final accentColor = subjectColors[subject] ?? theme.colorScheme.primary;
 
     final bgColor = isSelected ? accentColor : theme.colorScheme.surface;
     final textColor = isSelected ? Colors.white : theme.colorScheme.onSurface;
-    final subTextColor =
-        isSelected ? Colors.white70 : theme.colorScheme.onSurfaceVariant;
-    final borderColor =
-        isSelected ? accentColor : theme.colorScheme.outline.withValues(alpha: 0.3);
+    final subTextColor = isSelected
+        ? Colors.white70
+        : theme.colorScheme.onSurfaceVariant;
+    final borderColor = isSelected
+        ? accentColor
+        : theme.colorScheme.outline.withValues(alpha: 0.3);
 
     return GestureDetector(
       onTap: onTap,
@@ -38,7 +42,7 @@ class SubjectCard extends StatelessWidget {
         duration: const Duration(milliseconds: 250),
         curve: Curves.easeInOut,
         margin: EdgeInsets.symmetric(vertical: size.height * 0.007),
-        padding: EdgeInsets.all(size.width * 0.04),
+        padding: EdgeInsets.all(cw * 0.04),
         decoration: BoxDecoration(
           color: bgColor,
           borderRadius: BorderRadius.circular(16),
@@ -53,7 +57,7 @@ class SubjectCard extends StatelessWidget {
                 ]
               : [
                   BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.06),
+                    color: theme.colorScheme.shadow.withValues(alpha: 0.06),
                     blurRadius: 8,
                     offset: const Offset(0, 2),
                   )
@@ -63,8 +67,8 @@ class SubjectCard extends StatelessWidget {
           children: [
             // Ikon mata kuliah (Material Icon)
             Container(
-              width: size.width * 0.14,
-              height: size.width * 0.14,
+              width: cw * 0.14,
+              height: cw * 0.14,
               decoration: BoxDecoration(
                 color: isSelected
                     ? Colors.white.withValues(alpha: 0.2)
@@ -75,11 +79,11 @@ class SubjectCard extends StatelessWidget {
                 child: Icon(
                   iconData,
                   color: isSelected ? Colors.white : accentColor,
-                  size: size.width * 0.07,
+                  size: cw * 0.07,
                 ),
               ),
             ),
-            SizedBox(width: size.width * 0.04),
+            SizedBox(width: cw * 0.04),
             // Nama & deskripsi mata kuliah
             Expanded(
               child: Column(
@@ -89,7 +93,7 @@ class SubjectCard extends StatelessWidget {
                     subject,
                     style: TextStyle(
                       color: textColor,
-                      fontSize: size.width * 0.04,
+                      fontSize: cw * 0.04,
                       fontWeight: FontWeight.w700,
                       fontFamily: 'Poppins',
                     ),
@@ -99,7 +103,7 @@ class SubjectCard extends StatelessWidget {
                     description,
                     style: TextStyle(
                       color: subTextColor,
-                      fontSize: size.width * 0.032,
+                      fontSize: cw * 0.032,
                       fontFamily: 'Poppins',
                     ),
                   ),
@@ -114,13 +118,13 @@ class SubjectCard extends StatelessWidget {
                       Icons.check_circle_rounded,
                       key: const ValueKey('check'),
                       color: Colors.white,
-                      size: size.width * 0.065,
+                      size: cw * 0.065,
                     )
                   : Icon(
                       Icons.radio_button_unchecked_rounded,
                       key: const ValueKey('uncheck'),
                       color: theme.colorScheme.outline.withValues(alpha: 0.5),
-                      size: size.width * 0.065,
+                      size: cw * 0.065,
                     ),
             ),
           ],

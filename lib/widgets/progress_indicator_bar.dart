@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../utils/responsive.dart';
 
 /// Progress bar reusable untuk menunjukkan progres soal di QuizScreen
 class QuizProgressBar extends StatelessWidget {
@@ -15,6 +16,7 @@ class QuizProgressBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final theme = Theme.of(context);
+    final cw = Responsive.cw(context);
     final progress = total == 0 ? 0.0 : (current + 1) / total;
 
     return Column(
@@ -27,7 +29,7 @@ class QuizProgressBar extends StatelessWidget {
             Text(
               'Soal ${current + 1} dari $total',
               style: TextStyle(
-                fontSize: size.width * 0.035,
+                fontSize: cw * 0.035,
                 fontWeight: FontWeight.w600,
                 color: theme.colorScheme.onSurfaceVariant,
                 fontFamily: 'Poppins',
@@ -36,7 +38,7 @@ class QuizProgressBar extends StatelessWidget {
             Text(
               '${((progress) * 100).round()}%',
               style: TextStyle(
-                fontSize: size.width * 0.035,
+                fontSize: cw * 0.035,
                 fontWeight: FontWeight.w700,
                 color: theme.colorScheme.primary,
                 fontFamily: 'Poppins',

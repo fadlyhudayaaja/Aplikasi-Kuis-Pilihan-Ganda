@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../utils/responsive.dart';
 
 /// Tombol kustom reusable yang digunakan di seluruh aplikasi
 class CustomButton extends StatelessWidget {
@@ -22,8 +23,8 @@ class CustomButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final screenWidth = MediaQuery.of(context).size.width;
-    final buttonWidth = screenWidth * 0.85;
+    final cw = Responsive.cw(context);
+    final buttonWidth = cw * 0.85;
 
     final bgColor = backgroundColor ?? theme.colorScheme.primary;
     final fgColor = textColor ?? Colors.white;
@@ -35,21 +36,19 @@ class CustomButton extends StatelessWidget {
           onPressed: onPressed,
           style: OutlinedButton.styleFrom(
             side: BorderSide(color: bgColor, width: 2),
-            padding: EdgeInsets.symmetric(
-              vertical: screenWidth * 0.04,
-            ),
+            padding: EdgeInsets.symmetric(vertical: cw * 0.04),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(14),
             ),
           ),
           icon: icon != null
-              ? Icon(icon, color: bgColor, size: screenWidth * 0.055)
+              ? Icon(icon, color: bgColor, size: cw * 0.055)
               : const SizedBox.shrink(),
           label: Text(
             label,
             style: TextStyle(
               color: bgColor,
-              fontSize: screenWidth * 0.042,
+              fontSize: cw * 0.042,
               fontWeight: FontWeight.w600,
               fontFamily: 'Poppins',
             ),
@@ -65,22 +64,20 @@ class CustomButton extends StatelessWidget {
         style: ElevatedButton.styleFrom(
           backgroundColor: bgColor,
           foregroundColor: fgColor,
-          disabledBackgroundColor: Colors.grey.shade300,
-          padding: EdgeInsets.symmetric(
-            vertical: screenWidth * 0.04,
-          ),
+          disabledBackgroundColor: theme.colorScheme.surfaceContainerHighest,
+          padding: EdgeInsets.symmetric(vertical: cw * 0.04),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(14),
           ),
           elevation: 3,
         ),
         icon: icon != null
-            ? Icon(icon, size: screenWidth * 0.055)
+            ? Icon(icon, size: cw * 0.055)
             : const SizedBox.shrink(),
         label: Text(
           label,
           style: TextStyle(
-            fontSize: screenWidth * 0.042,
+            fontSize: cw * 0.042,
             fontWeight: FontWeight.w600,
             fontFamily: 'Poppins',
           ),

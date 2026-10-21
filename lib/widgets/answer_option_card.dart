@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../utils/responsive.dart';
 
 /// Kartu pilihan jawaban reusable untuk QuizScreen
 class AnswerOptionCard extends StatelessWidget {
@@ -19,6 +20,7 @@ class AnswerOptionCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final theme = Theme.of(context);
+    final cw = Responsive.cw(context);
 
     Color bgColor;
     Color borderColor;
@@ -28,17 +30,17 @@ class AnswerOptionCard extends StatelessWidget {
 
     switch (state) {
       case AnswerState.correct:
-        bgColor = const Color(0xFFE8F5E9);
+        bgColor = const Color(0xFF43A047).withValues(alpha: 0.12);
         borderColor = const Color(0xFF43A047);
         labelColor = const Color(0xFF43A047);
-        textColor = const Color(0xFF2E7D32);
+        textColor = const Color(0xFF43A047);
         trailingIcon = Icons.check_circle_rounded;
         break;
       case AnswerState.wrong:
-        bgColor = const Color(0xFFFFEBEE);
+        bgColor = const Color(0xFFE53935).withValues(alpha: 0.12);
         borderColor = const Color(0xFFE53935);
         labelColor = const Color(0xFFE53935);
-        textColor = const Color(0xFFC62828);
+        textColor = const Color(0xFFE53935);
         trailingIcon = Icons.cancel_rounded;
         break;
       case AnswerState.selected:
@@ -65,7 +67,7 @@ class AnswerOptionCard extends StatelessWidget {
         width: double.infinity,
         margin: EdgeInsets.symmetric(vertical: size.height * 0.006),
         padding: EdgeInsets.symmetric(
-          horizontal: size.width * 0.04,
+          horizontal: cw * 0.04,
           vertical: size.height * 0.016,
         ),
         decoration: BoxDecoration(
@@ -84,8 +86,8 @@ class AnswerOptionCard extends StatelessWidget {
           children: [
             // Label huruf (A, B, C, D)
             Container(
-              width: size.width * 0.09,
-              height: size.width * 0.09,
+              width: cw * 0.09,
+              height: cw * 0.09,
               decoration: BoxDecoration(
                 color: labelColor.withValues(alpha: 0.15),
                 shape: BoxShape.circle,
@@ -96,20 +98,20 @@ class AnswerOptionCard extends StatelessWidget {
                   style: TextStyle(
                     color: labelColor,
                     fontWeight: FontWeight.bold,
-                    fontSize: size.width * 0.038,
+                    fontSize: cw * 0.038,
                     fontFamily: 'Poppins',
                   ),
                 ),
               ),
             ),
-            SizedBox(width: size.width * 0.035),
+            SizedBox(width: cw * 0.035),
             // Teks opsi jawaban
             Expanded(
               child: Text(
                 optionText,
                 style: TextStyle(
                   color: textColor,
-                  fontSize: size.width * 0.038,
+                  fontSize: cw * 0.038,
                   fontFamily: 'Poppins',
                   fontWeight: state == AnswerState.normal
                       ? FontWeight.w400
@@ -119,7 +121,7 @@ class AnswerOptionCard extends StatelessWidget {
             ),
             // Ikon status (benar/salah)
             if (trailingIcon != null)
-              Icon(trailingIcon, color: borderColor, size: size.width * 0.06),
+              Icon(trailingIcon, color: borderColor, size: cw * 0.06),
           ],
         ),
       ),
