@@ -123,6 +123,9 @@ flutter run -d windows
 ### Tampilan Tablet / Web
 > *Tambahkan screenshot tampilan di layar lebar (NavigationRail)*
 
+### Dark Mode
+> *Tambahkan screenshot tampilan Dark Mode*
+
 ---
 
 ## 🎨 Dokumentasi
