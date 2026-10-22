@@ -213,7 +213,7 @@ class _SplashScreenState extends State<SplashScreen>
                               borderRadius: BorderRadius.circular(20),
                             ),
                             child: Text(
-                              'IKLC Fasilkom-TI USU',
+                              'Fasilkom-TI USU',
                               style: TextStyle(
                                 color: Colors.white.withValues(alpha: 0.9),
                                 fontSize: cw * 0.032,
