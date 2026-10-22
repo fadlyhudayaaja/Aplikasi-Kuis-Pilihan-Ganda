@@ -103,25 +103,28 @@ flutter run -d windows
 ## 🖼️ Screenshot Aplikasi
 
 ### Splash Screen
-![Splash Screen](screenshots/splash.jpeg)
+<img src="screenshots/splash.jpeg" width="300" alt="Splash Screen"/>
 
 ### Beranda (Home) — Portrait
-![Beranda Portrait](screenshots/home_portrait.jpeg)
+<img src="screenshots/home_portrait.jpeg" width="300" alt="Beranda Portrait"/>
 
-### Beranda (Home) — Landscape
-![Beranda Landscape](screenshots/home_landscape.jpeg)
+### Beranda (Home) — Responsive (Tablet / Web)
+<img src="screenshots/home_responsive.png" width="600" alt="Beranda Responsive"/>
 
 ### Kuis
-![Kuis](screenshots/quiz.jpeg)
+<img src="screenshots/quiz.jpeg" width="300" alt="Kuis"/>
 
 ### Hasil Kuis
-![Hasil Kuis](screenshots/result.jpeg)
+<img src="screenshots/result.jpeg" width="300" alt="Hasil Kuis"/>
 
 ### Favorit
-![Favorit](screenshots/favorites.jpeg)
+<img src="screenshots/favorites.jpeg" width="300" alt="Favorit"/>
 
 ### Riwayat
-![Riwayat](screenshots/history.jpeg)
+<img src="screenshots/history.jpeg" width="300" alt="Riwayat"/>
+
+### Dark Mode
+<img src="screenshots/darkmode.jpeg" width="300" alt="Dark Mode"/>
 
 ---
 
