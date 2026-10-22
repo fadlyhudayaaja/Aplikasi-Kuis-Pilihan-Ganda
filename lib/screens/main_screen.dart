@@ -4,8 +4,9 @@ import '../utils/responsive.dart';
 import '../widgets/theme_toggle_button.dart';
 import 'home_screen.dart';
 import 'history_screen.dart';
+import 'favorites_screen.dart';
 
-/// Halaman utama dengan bottom navigation – Beranda & Histori.
+/// Halaman utama dengan bottom navigation – Beranda, Favorit & Histori.
 /// Di layar lebar (tablet/web), menggunakan NavigationRail sebagai sidebar.
 class MainScreen extends StatefulWidget {
   final int initialIndex;
@@ -68,11 +69,11 @@ class _MainScreenState extends State<MainScreen> {
     final isWide = Responsive.isWide(context);
     final isLandscape = Responsive.isLandscape(context);
 
-    const screens = [HomeScreen(), HistoryScreen()];
+    const screens = [HomeScreen(), FavoritesScreen(), HistoryScreen()];
 
-    final labels = ['Beranda', 'Histori'];
-    final icons = [Icons.home_outlined, Icons.history_outlined];
-    final selectedIcons = [Icons.home_rounded, Icons.history_rounded];
+    final labels = ['Beranda', 'Favorit', 'Histori'];
+    final icons = [Icons.home_outlined, Icons.star_border_rounded, Icons.history_outlined];
+    final selectedIcons = [Icons.home_rounded, Icons.star_rounded, Icons.history_rounded];
 
     if (isWide) {
       // ── Tablet / Web: NavigationRail di kiri ──────────────────────────────
@@ -152,7 +153,7 @@ class _MainScreenState extends State<MainScreen> {
                             fontFamily: 'Poppins', fontWeight: FontWeight.w500,
                             color: theme.colorScheme.onSurfaceVariant,
                           ),
-                          destinations: List.generate(2, (i) {
+                          destinations: List.generate(3, (i) {
                             return NavigationRailDestination(
                               icon: Icon(icons[i]),
                               selectedIcon: Icon(selectedIcons[i]),
@@ -174,7 +175,7 @@ class _MainScreenState extends State<MainScreen> {
             // Konten — pakai Offstage agar tidak ada overflow
             Expanded(
               child: Stack(
-                children: List.generate(2, (i) => _buildScreen(screens[i], i)),
+                children: List.generate(3, (i) => _buildScreen(screens[i], i)),
               ),
             ),
           ],
@@ -185,7 +186,7 @@ class _MainScreenState extends State<MainScreen> {
     // ── Phone portrait & landscape: Bottom NavigationBar ─────────────────────
     return Scaffold(
       body: Stack(
-        children: List.generate(2, (i) => _buildScreen(screens[i], i)),
+        children: List.generate(3, (i) => _buildScreen(screens[i], i)),
       ),
       bottomNavigationBar: isLandscape
           // Landscape: compact tanpa label
@@ -194,7 +195,7 @@ class _MainScreenState extends State<MainScreen> {
               onDestinationSelected: (i) => setState(() => _currentIndex = i),
               labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
               height: 48,
-              destinations: List.generate(2, (i) => NavigationDestination(
+              destinations: List.generate(3, (i) => NavigationDestination(
                 icon: Icon(icons[i]),
                 selectedIcon: Icon(selectedIcons[i]),
                 label: labels[i],
@@ -204,7 +205,7 @@ class _MainScreenState extends State<MainScreen> {
           : NavigationBar(
               selectedIndex: _currentIndex,
               onDestinationSelected: (i) => setState(() => _currentIndex = i),
-              destinations: List.generate(2, (i) => NavigationDestination(
+              destinations: List.generate(3, (i) => NavigationDestination(
                 icon: Icon(icons[i]),
                 selectedIcon: Icon(selectedIcons[i]),
                 label: labels[i],

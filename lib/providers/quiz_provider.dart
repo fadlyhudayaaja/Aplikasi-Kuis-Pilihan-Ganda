@@ -31,6 +31,22 @@ class QuizState extends ChangeNotifier {
   final List<QuizResult> _history = List.from(dummyHistory);
   List<QuizResult> get history => List.unmodifiable(_history);
 
+  // ── State mata kuliah favorit ──────────────────────────────────────────────
+  final Set<String> _favoriteSubjects = {};
+  List<String> get favoriteSubjects => _favoriteSubjects.toList()
+    ..sort((a, b) => subjects.indexOf(a).compareTo(subjects.indexOf(b)));
+
+  bool isFavorite(String subject) => _favoriteSubjects.contains(subject);
+
+  void toggleFavorite(String subject) {
+    if (_favoriteSubjects.contains(subject)) {
+      _favoriteSubjects.remove(subject);
+    } else {
+      _favoriteSubjects.add(subject);
+    }
+    notifyListeners();
+  }
+
   // ── State sesi kuis aktif ───────────────────────────────────────────────────
   String _userName = '';
   String _nim = '';

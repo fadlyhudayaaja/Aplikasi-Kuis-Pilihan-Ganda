@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../data/quiz_data.dart';
+import '../providers/quiz_provider.dart';
 import '../utils/responsive.dart';
 
 /// Kartu pemilihan mata kuliah reusable di HomeScreen
@@ -110,6 +111,14 @@ class SubjectCard extends StatelessWidget {
                 ],
               ),
             ),
+            // Tombol favorit
+            _FavoriteButton(
+              subject: subject,
+              accentColor: accentColor,
+              isSelected: isSelected,
+              cw: cw,
+            ),
+            SizedBox(width: cw * 0.02),
             // Checkmark jika dipilih
             AnimatedSwitcher(
               duration: const Duration(milliseconds: 200),
@@ -130,6 +139,55 @@ class SubjectCard extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+/// Tombol bintang untuk menandai mata kuliah sebagai favorit
+class _FavoriteButton extends StatelessWidget {
+  final String subject;
+  final Color accentColor;
+  final bool isSelected;
+  final double cw;
+
+  const _FavoriteButton({
+    required this.subject,
+    required this.accentColor,
+    required this.isSelected,
+    required this.cw,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final state = QuizProvider.of(context);
+
+    return ListenableBuilder(
+      listenable: state,
+      builder: (context, _) {
+        final isFav = state.isFavorite(subject);
+
+        return GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: () => state.toggleFavorite(subject),
+          child: Padding(
+            padding: EdgeInsets.all(cw * 0.02),
+            child: AnimatedSwitcher(
+              duration: const Duration(milliseconds: 250),
+              transitionBuilder: (child, anim) {
+                return ScaleTransition(scale: anim, child: child);
+              },
+              child: Icon(
+                isFav ? Icons.star_rounded : Icons.star_border_rounded,
+                key: ValueKey(isFav),
+                color: isFav
+                    ? const Color(0xFFFFB300)
+                    : (isSelected ? Colors.white70 : accentColor.withValues(alpha: 0.5)),
+                size: cw * 0.07,
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 }

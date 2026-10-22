@@ -204,16 +204,19 @@ class _ResultScreenState extends State<ResultScreen>
         opacity: _cardFade,
         child: Column(
           children: [
-            _InfoCard(children: [
-              _InfoRow(icon: Icons.person_rounded, label: 'Nama', value: result.userName, color: primary, cb: cb),
-              Divider(height: ch * 0.02, color: theme.colorScheme.outline.withValues(alpha: 0.15)),
-              _InfoRow(icon: Icons.badge_rounded, label: 'NIM', value: result.nim, color: primary, cb: cb),
-              Divider(height: ch * 0.02, color: theme.colorScheme.outline.withValues(alpha: 0.15)),
-              _InfoRow(icon: Icons.book_rounded, label: 'Mata Kuliah', value: result.subject, color: primary, cb: cb),
-              Divider(height: ch * 0.02, color: theme.colorScheme.outline.withValues(alpha: 0.15)),
-              _InfoRow(icon: Icons.access_time_rounded, label: 'Selesai pada',
-                  value: _formatDateTime(result.finishedAt), color: primary, cb: cb),
-            ], cb: cb),
+            _InfoCard(
+              cb: cb,
+              children: [
+                _InfoRow(icon: Icons.person_rounded, label: 'Nama', value: result.userName, color: primary, cb: cb),
+                Divider(height: ch * 0.02, color: theme.colorScheme.outline.withValues(alpha: 0.15)),
+                _InfoRow(icon: Icons.badge_rounded, label: 'NIM', value: result.nim, color: primary, cb: cb),
+                Divider(height: ch * 0.02, color: theme.colorScheme.outline.withValues(alpha: 0.15)),
+                _InfoRow(icon: Icons.book_rounded, label: 'Mata Kuliah', value: result.subject, color: primary, cb: cb),
+                Divider(height: ch * 0.02, color: theme.colorScheme.outline.withValues(alpha: 0.15)),
+                _InfoRow(icon: Icons.access_time_rounded, label: 'Selesai pada',
+                    value: _formatDateTime(result.finishedAt), color: primary, cb: cb),
+              ],
+            ),
             SizedBox(height: ch * 0.014),
             Row(
               children: [
@@ -231,32 +234,35 @@ class _ResultScreenState extends State<ResultScreen>
               ],
             ),
             SizedBox(height: ch * 0.014),
-            _InfoCard(children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text('Akurasi Jawaban', style: TextStyle(fontFamily: 'Poppins',
-                    fontSize: cb * 0.036, fontWeight: FontWeight.w600,
-                    color: theme.colorScheme.onSurface)),
-                  Text('${result.percentage.round()}%', style: TextStyle(fontFamily: 'Poppins',
-                    fontSize: cb * 0.036, fontWeight: FontWeight.w700, color: sColor)),
-                ],
-              ),
-              const SizedBox(height: 10),
-              ClipRRect(
-                borderRadius: BorderRadius.circular(8),
-                child: TweenAnimationBuilder<double>(
-                  tween: Tween(begin: 0, end: result.percentage / 100),
-                  duration: const Duration(milliseconds: 900),
-                  curve: Curves.easeInOut,
-                  builder: (ctx, val, _) => LinearProgressIndicator(
-                    value: val, minHeight: 10,
-                    backgroundColor: theme.colorScheme.surfaceContainerHighest,
-                    valueColor: AlwaysStoppedAnimation<Color>(sColor),
+            _InfoCard(
+              cb: cb,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text('Akurasi Jawaban', style: TextStyle(fontFamily: 'Poppins',
+                      fontSize: cb * 0.036, fontWeight: FontWeight.w600,
+                      color: theme.colorScheme.onSurface)),
+                    Text('${result.percentage.round()}%', style: TextStyle(fontFamily: 'Poppins',
+                      fontSize: cb * 0.036, fontWeight: FontWeight.w700, color: sColor)),
+                  ],
+                ),
+                const SizedBox(height: 10),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: TweenAnimationBuilder<double>(
+                    tween: Tween(begin: 0, end: result.percentage / 100),
+                    duration: const Duration(milliseconds: 900),
+                    curve: Curves.easeInOut,
+                    builder: (ctx, val, _) => LinearProgressIndicator(
+                      value: val, minHeight: 10,
+                      backgroundColor: theme.colorScheme.surfaceContainerHighest,
+                      valueColor: AlwaysStoppedAnimation<Color>(sColor),
+                    ),
                   ),
                 ),
-              ),
-            ], cb: cb),
+              ],
+            ),
           ],
         ),
       ),
@@ -276,7 +282,7 @@ class _ResultScreenState extends State<ResultScreen>
                 final state = QuizProvider.of(context);
                 state.resetQuiz();
                 Navigator.pushAndRemoveUntil(context,
-                  MaterialPageRoute(builder: (_) => const MainScreen(initialIndex: 1)),
+                  MaterialPageRoute(builder: (_) => const MainScreen(initialIndex: 2)),
                   (_) => false);
               },
               icon: Icons.history_rounded, backgroundColor: primary,

@@ -102,6 +102,8 @@ class _SplashScreenState extends State<SplashScreen>
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final cw = Responsive.cw(context);
+    // Gunakan cw sebagai base spacing agar konsisten di semua ukuran layar
+    final spacing = cw * 0.06;
 
     return AnimatedBuilder(
       animation: _exitFade,
@@ -124,13 +126,14 @@ class _SplashScreenState extends State<SplashScreen>
           ),
           child: Stack(
             children: [
-              // ── Dekorasi lingkaran latar belakang (capped) ────────────
+              // ── Dekorasi lingkaran latar belakang ────────────────────
+              // Posisi relatif terhadap ukuran layar agar tetap di pojok
               Positioned(
-                top: -cw * 0.25,
-                right: -cw * 0.2,
+                top: -size.height * 0.1,
+                right: -size.width * 0.1,
                 child: Container(
-                  width: cw * 0.7,
-                  height: cw * 0.7,
+                  width: size.width * 0.35,
+                  height: size.width * 0.35,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     color: Colors.white.withValues(alpha: 0.06),
@@ -138,11 +141,11 @@ class _SplashScreenState extends State<SplashScreen>
                 ),
               ),
               Positioned(
-                bottom: -cw * 0.3,
-                left: -cw * 0.2,
+                bottom: -size.height * 0.1,
+                left: -size.width * 0.1,
                 child: Container(
-                  width: cw * 0.8,
-                  height: cw * 0.8,
+                  width: size.width * 0.4,
+                  height: size.width * 0.4,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     color: Colors.white.withValues(alpha: 0.06),
@@ -150,94 +153,86 @@ class _SplashScreenState extends State<SplashScreen>
                 ),
               ),
 
-              // ── Konten tengah ─────────────────────────────────────────
+              // ── Konten tengah — selalu vertikal & horizontal center ───
               Center(
-                child: Responsive.constrain(
-                  context: context,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      // Logo animasi
-                      ScaleTransition(
-                        scale: _logoScale,
-                        child: FadeTransition(
-                          opacity: _logoFade,
-                          child: _LogoWidget(cw: cw),
-                        ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    // Logo animasi
+                    ScaleTransition(
+                      scale: _logoScale,
+                      child: FadeTransition(
+                        opacity: _logoFade,
+                        child: _LogoWidget(cw: cw),
                       ),
+                    ),
 
-                      SizedBox(height: size.height * 0.04),
+                    SizedBox(height: spacing),
 
-                      // Nama aplikasi
-                      SlideTransition(
-                        position: _textSlide,
-                        child: FadeTransition(
-                          opacity: _textFade,
-                          child: Text(
-                            'QuizMate',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: cw * 0.1,
-                              fontWeight: FontWeight.w800,
-                              fontFamily: 'Poppins',
-                              letterSpacing: -1,
-                            ),
+                    // Nama aplikasi
+                    SlideTransition(
+                      position: _textSlide,
+                      child: FadeTransition(
+                        opacity: _textFade,
+                        child: Text(
+                          'QuizMate',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: cw * 0.1,
+                            fontWeight: FontWeight.w800,
+                            fontFamily: 'Poppins',
+                            letterSpacing: -1,
                           ),
                         ),
                       ),
+                    ),
 
-                      SizedBox(height: size.height * 0.008),
+                    SizedBox(height: spacing * 0.2),
 
-                      // Tagline
-                      FadeTransition(
-                        opacity: _taglineFade,
-                        child: Column(
-                          children: [
-                            Text(
-                              'Kuis Pilihan Ganda',
+                    // Tagline
+                    FadeTransition(
+                      opacity: _taglineFade,
+                      child: Column(
+                        children: [
+                          Text(
+                            'Kuis Pilihan Ganda',
+                            style: TextStyle(
+                              color: Colors.white.withValues(alpha: 0.85),
+                              fontSize: cw * 0.042,
+                              fontFamily: 'Poppins',
+                              fontWeight: FontWeight.w500,
+                              letterSpacing: 0.5,
+                            ),
+                          ),
+                          SizedBox(height: spacing * 0.15),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 14, vertical: 5),
+                            decoration: BoxDecoration(
+                              color: Colors.white.withValues(alpha: 0.15),
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: Text(
+                              'IKLC Fasilkom-TI USU',
                               style: TextStyle(
-                                color: Colors.white.withValues(alpha: 0.85),
-                                fontSize: cw * 0.042,
+                                color: Colors.white.withValues(alpha: 0.9),
+                                fontSize: cw * 0.032,
                                 fontFamily: 'Poppins',
                                 fontWeight: FontWeight.w500,
-                                letterSpacing: 0.5,
+                                letterSpacing: 0.3,
                               ),
                             ),
-                            SizedBox(height: size.height * 0.006),
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 14, vertical: 5),
-                              decoration: BoxDecoration(
-                                color: Colors.white.withValues(alpha: 0.15),
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              child: Text(
-                                'IKLC Fasilkom-TI USU',
-                                style: TextStyle(
-                                  color: Colors.white.withValues(alpha: 0.9),
-                                  fontSize: cw * 0.032,
-                                  fontFamily: 'Poppins',
-                                  fontWeight: FontWeight.w500,
-                                  letterSpacing: 0.3,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
+                          ),
+                          SizedBox(height: spacing * 0.8),
+                          // Loading dots inline agar ikut ter-center
+                          FadeTransition(
+                            opacity: _taglineFade,
+                            child: const _LoadingDots(),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
-                ),
-              ),
-
-              // ── Loading dots di bawah ─────────────────────────────────
-              Positioned(
-                bottom: size.height * 0.08,
-                left: 0,
-                right: 0,
-                child: FadeTransition(
-                  opacity: _taglineFade,
-                  child: const _LoadingDots(),
+                    ),
+                  ],
                 ),
               ),
             ],
