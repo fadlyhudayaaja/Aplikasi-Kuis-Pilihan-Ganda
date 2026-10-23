@@ -139,10 +139,10 @@ flutter run -d windows
 | Framework | [Flutter](https://flutter.dev) – BSD 3-Clause License |
 
 ### Link Mockup / Prototype
-> [Tambahkan link Figma / Adobe XD / mockup aplikasi]
+> [[Tambahkan link Figma / Adobe XD / mockup aplikasi](https://canva.link/vpe015i4p5xktfi)]
 
 ### Link Video Presentasi
-> [Tambahkan link Google Drive video presentasi (maks. 10 menit)]
+> [[Tambahkan link Google Drive video presentasi (maks. 10 menit)](https://drive.google.com/drive/folders/1GA6Nl4VE2swcuJ2kJmHaimvQlzxyKSuH?usp=sharing)]
 
 ---
 
