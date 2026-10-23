@@ -54,7 +54,9 @@ class HistoryScreen extends StatelessWidget {
                       children: [
                         Text('Riwayat Kuis', style: TextStyle(
                           fontFamily: 'Poppins', fontWeight: FontWeight.w800,
-                          fontSize: cw * 0.065, color: theme.colorScheme.onSurface,
+                          // pakai cb agar tidak kebesaran di landscape
+                          fontSize: Responsive.cwBase(context) * 0.058,
+                          color: theme.colorScheme.onSurface,
                         )),
                         Row(
                           children: [
@@ -65,7 +67,8 @@ class HistoryScreen extends StatelessWidget {
                                 borderRadius: BorderRadius.circular(20),
                               ),
                               child: Text('${history.length} kuis', style: TextStyle(
-                                fontFamily: 'Poppins', fontSize: cw * 0.033,
+                                fontFamily: 'Poppins',
+                                fontSize: Responsive.cwBase(context) * 0.033,
                                 fontWeight: FontWeight.w600, color: primary,
                               )),
                             ),
@@ -197,9 +200,10 @@ class _MiniStatCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final ch = Responsive.ch(context);
     final cw = Responsive.cw(context);
+    final cb = Responsive.cwBase(context);
     final theme = Theme.of(context);
     return Container(
-      padding: EdgeInsets.symmetric(vertical: ch * 0.014, horizontal: cw * 0.02),
+      padding: EdgeInsets.symmetric(vertical: ch * 0.012, horizontal: cw * 0.02),
       decoration: BoxDecoration(
         color: theme.colorScheme.surface, borderRadius: BorderRadius.circular(14),
         boxShadow: [BoxShadow(color: theme.colorScheme.shadow.withValues(alpha: 0.05),
@@ -207,11 +211,11 @@ class _MiniStatCard extends StatelessWidget {
       ),
       child: Column(
         children: [
-          Icon(icon, color: color, size: cw * 0.055),
-          SizedBox(height: ch * 0.005),
-          Text(value, style: TextStyle(fontFamily: 'Poppins', fontSize: cw * 0.052,
+          Icon(icon, color: color, size: cb * 0.050),
+          SizedBox(height: ch * 0.004),
+          Text(value, style: TextStyle(fontFamily: 'Poppins', fontSize: cb * 0.046,
             fontWeight: FontWeight.w800, color: color)),
-          Text(label, style: TextStyle(fontFamily: 'Poppins', fontSize: cw * 0.028,
+          Text(label, style: TextStyle(fontFamily: 'Poppins', fontSize: cb * 0.026,
             color: theme.colorScheme.onSurfaceVariant)),
         ],
       ),
@@ -227,25 +231,26 @@ class _TableHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final ch = Responsive.ch(context);
     final cw = Responsive.cw(context);
+    final cb = Responsive.cwBase(context);
     final primary = Theme.of(context).colorScheme.primary;
 
     return Container(
       color: primary,
-      padding: EdgeInsets.symmetric(horizontal: cw * 0.04, vertical: ch * 0.013),
+      padding: EdgeInsets.symmetric(horizontal: cw * 0.04, vertical: ch * 0.011),
       child: Row(
         children: [
           SizedBox(width: cw * 0.055,
             child: Text('#', style: TextStyle(fontFamily: 'Poppins', fontWeight: FontWeight.w700,
-              fontSize: cw * 0.028, color: Colors.white))),
+              fontSize: cb * 0.026, color: Colors.white))),
           Expanded(flex: 4,
             child: Text('Nama / NIM / Mata Kuliah', style: TextStyle(fontFamily: 'Poppins',
-              fontWeight: FontWeight.w700, fontSize: cw * 0.028, color: Colors.white))),
+              fontWeight: FontWeight.w700, fontSize: cb * 0.026, color: Colors.white))),
           SizedBox(width: cw * 0.15,
             child: Text('Skor', textAlign: TextAlign.center, style: TextStyle(fontFamily: 'Poppins',
-              fontWeight: FontWeight.w700, fontSize: cw * 0.028, color: Colors.white))),
+              fontWeight: FontWeight.w700, fontSize: cb * 0.026, color: Colors.white))),
           Expanded(flex: 2,
             child: Text('Waktu', textAlign: TextAlign.end, style: TextStyle(fontFamily: 'Poppins',
-              fontWeight: FontWeight.w700, fontSize: cw * 0.028, color: Colors.white))),
+              fontWeight: FontWeight.w700, fontSize: cb * 0.026, color: Colors.white))),
         ],
       ),
     );
@@ -270,6 +275,7 @@ class _HistoryRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final ch = Responsive.ch(context);
     final cw = Responsive.cw(context);
+    final cb = Responsive.cwBase(context);
     final theme = Theme.of(context);
     final isEven = index % 2 == 0;
 
@@ -277,12 +283,12 @@ class _HistoryRow extends StatelessWidget {
       color: isEven
           ? theme.colorScheme.surface
           : theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
-      padding: EdgeInsets.symmetric(horizontal: cw * 0.04, vertical: ch * 0.012),
+      padding: EdgeInsets.symmetric(horizontal: cw * 0.04, vertical: ch * 0.010),
       child: Row(
         children: [
           SizedBox(width: cw * 0.055,
             child: Text('${index + 1}', style: TextStyle(fontFamily: 'Poppins',
-              fontSize: cw * 0.03, fontWeight: FontWeight.w600,
+              fontSize: cb * 0.028, fontWeight: FontWeight.w600,
               color: theme.colorScheme.onSurfaceVariant))),
           Expanded(
             flex: 4,
@@ -290,19 +296,19 @@ class _HistoryRow extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(result.userName, style: TextStyle(fontFamily: 'Poppins',
-                  fontSize: cw * 0.032, fontWeight: FontWeight.w700,
+                  fontSize: cb * 0.030, fontWeight: FontWeight.w700,
                   color: theme.colorScheme.onSurface), overflow: TextOverflow.ellipsis),
                 Row(children: [
-                  Icon(Icons.badge_outlined, size: cw * 0.028, color: theme.colorScheme.onSurfaceVariant),
+                  Icon(Icons.badge_outlined, size: cb * 0.026, color: theme.colorScheme.onSurfaceVariant),
                   const SizedBox(width: 3),
-                  Text(result.nim, style: TextStyle(fontFamily: 'Poppins', fontSize: cw * 0.027,
+                  Text(result.nim, style: TextStyle(fontFamily: 'Poppins', fontSize: cb * 0.025,
                     color: theme.colorScheme.onSurfaceVariant, fontWeight: FontWeight.w500, letterSpacing: 0.5)),
                 ]),
                 Row(children: [
-                  Icon(subjectIcon, size: cw * 0.028, color: subjectColor),
+                  Icon(subjectIcon, size: cb * 0.026, color: subjectColor),
                   const SizedBox(width: 3),
                   Flexible(child: Text(result.subject, style: TextStyle(fontFamily: 'Poppins',
-                    fontSize: cw * 0.025, color: subjectColor, fontWeight: FontWeight.w600),
+                    fontSize: cb * 0.024, color: subjectColor, fontWeight: FontWeight.w600),
                     overflow: TextOverflow.ellipsis)),
                 ]),
               ],
@@ -312,14 +318,14 @@ class _HistoryRow extends StatelessWidget {
             width: cw * 0.15,
             child: Center(
               child: Container(
-                padding: EdgeInsets.symmetric(horizontal: cw * 0.02, vertical: ch * 0.005),
+                padding: EdgeInsets.symmetric(horizontal: cw * 0.02, vertical: ch * 0.004),
                 decoration: BoxDecoration(
                   color: scoreColor.withValues(alpha: 0.12),
                   borderRadius: BorderRadius.circular(8),
                   border: Border.all(color: scoreColor.withValues(alpha: 0.4)),
                 ),
                 child: Text('${result.score}', textAlign: TextAlign.center,
-                  style: TextStyle(fontFamily: 'Poppins', fontSize: cw * 0.036,
+                  style: TextStyle(fontFamily: 'Poppins', fontSize: cb * 0.032,
                     fontWeight: FontWeight.w800, color: scoreColor)),
               ),
             ),
@@ -327,7 +333,7 @@ class _HistoryRow extends StatelessWidget {
           Expanded(
             flex: 2,
             child: Text(dateString, textAlign: TextAlign.end, style: TextStyle(
-              fontFamily: 'Poppins', fontSize: cw * 0.024,
+              fontFamily: 'Poppins', fontSize: cb * 0.022,
               color: theme.colorScheme.onSurfaceVariant, height: 1.4)),
           ),
         ],
